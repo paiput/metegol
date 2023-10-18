@@ -12,15 +12,18 @@ public class PlayersStick {
 	private final int REGION_HEIGHT = 64;
 	private float x, y;
 	private float w, h;
+	private int keyUp, keyDown;
 	private Texture texture;
 	private Sprite sprite;
 	private Player[] players;
 
-	public PlayersStick(int playersCount, float x, float y, float w, float h) {
+	public PlayersStick(int playersCount, float x, float y, float w, float h, int keyUp, int keyDown) {
 		this.x = x;
 		this.y = y;
 		this.w = w;
 		this.h = h;
+		this.keyUp = keyUp;
+		this.keyDown = keyDown;
 		texture = new Texture("stick-spritesheet.png");
 		sprite = new Sprite(texture, 0, 0, REGION_WIDTH, REGION_HEIGHT);
 		players = new Player[playersCount];
@@ -35,18 +38,27 @@ public class PlayersStick {
 	
 	public void init() {
 		
+		int pIndex = 0;
 		for (Player p : players) {
+			float vel = 0;
 			// Movimiento vertical del palo
-			if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-				p.setY(p.getY() - 200 * Gdx.graphics.getDeltaTime());
-				//p.body.setLinearVelocity(0, -100);
-			} else if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-				p.setY(p.getY() + 200 * Gdx.graphics.getDeltaTime());
-				//p.body.setLinearVelocity(0, 100);
-			} /*else {
-				p.body.setLinearVelocity(0, 0);
-			}*/
-		
+			if (Gdx.input.isKeyPressed(keyDown)) {
+				vel = -100;
+				// Bloquea los jugadores al llegar al borde de abajo
+				if (p.getY() < -h/2+p.getH()*pIndex + pIndex*h*0.15f) {
+					vel = 0;
+				}
+			} else if (Gdx.input.isKeyPressed(keyUp)) {
+				vel = 100;
+				// Bloquea los jugadores al llegar al borde de arriba
+				if (p.getY() > h/2 - (p.getH()*(players.length-pIndex) + (players.length-pIndex-1)*h*0.15f)) {
+					vel = 0;
+				}
+			} 
+			
+			p.body.setLinearVelocity(0, vel);
+
+			
 			// Cambia la region cuando patea 
 			if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
 				sprite.setRegion(REGION_WIDTH, 0, REGION_WIDTH, REGION_HEIGHT);
@@ -55,21 +67,30 @@ public class PlayersStick {
 				sprite.setRegion(0, 0, REGION_WIDTH, REGION_HEIGHT);
 				p.stand();
 			}
+			
+			
+			
+			
+			pIndex++;
 		}
 		
-		
+		/*
 		// Frena los jugadores al llegar a los bordes de la pantalla
 		int pIndex = 0;
 		for (Player p : players) {
+			float vel = 0;
+			
 			// Bloquea los jugadores al llegar al borde de abajo
 			if (p.getY() < -h/2+p.getH()*pIndex + pIndex*h*0.15f) {
-				p.setY(-h/2 + p.getH()*pIndex + pIndex*h*0.15f);
-				//p.body.setLinearVelocity(0, 0);
+				//p.setY(-h/2 + p.getH()*pIndex + pIndex*h*0.15f);
+				//p.body.setTransform(p.getX()+p.getH()/2, -h/2 + p.getH()*pIndex + pIndex*h*0.15f + p.getH()/2, 0);
+				p.body.setLinearVelocity(0, 1);
 			}
 			// Bloquea los jugadores al llegar al borde de arriba
 			if (p.getY() > h/2 - (p.getH()*(players.length-pIndex) + (players.length-pIndex-1)*h*0.15f)) {
-				p.setY(h/2 - (p.getH()*(players.length-pIndex) + (players.length-pIndex-1)*h*0.15f));
-				//p.body.setLinearVelocity(0, 0);
+				//p.setY(h/2 - (p.getH()*(players.length-pIndex) + (players.length-pIndex-1)*h*0.15f));
+				//p.body.setTransform(p.getX()+p.getH()/2, h/2 - (p.getH()*(players.length-pIndex) + (players.length-pIndex-1)*h*0.15f) + p.getH()/2, 0);
+				p.body.setLinearVelocity(0, -1);
 			}
 			pIndex++;
 		}
@@ -78,14 +99,15 @@ public class PlayersStick {
 				if (players.length == 1) {
 					Player gk = players[0];
 					if (gk.getY() > h/10) {
-						gk.setY(h/10);
-						//gk.body.setLinearVelocity(0, 0);
+						//gk.setY(h/10);
+						gk.body.setLinearVelocity(0, -10);
 					}
 					if (gk.getY() < -h/5) {
-						gk.setY(-h/5);
-						//gk.body.setLinearVelocity(0, 0);
+						//gk.setY(-h/5);
+						gk.body.setLinearVelocity(0, 10);
 					}
 				}
+				*/
 		
 	}
 	

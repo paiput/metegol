@@ -10,6 +10,7 @@ public class DesktopLauncher {
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.setForegroundFPS(60);
 		config.setTitle("Metegol");
+		config.setWindowedMode(1200, 890);
 		//config.setWindowSizeLimits(1280, 1024, 1920, 1080);
 		//config.useVsync(true);
 		new Lwjgl3Application(new Metegol(), config);

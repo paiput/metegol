@@ -1,11 +1,15 @@
 package com.eblp.metegol.entities;
 
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.eblp.metegol.utils.MyRenderer;
 
+import enums.TeamType;
+
 public class Team {
 	private String name;
+	private TeamType teamType;
 	private Texture texture;
 	private Sprite sprite;
 	// Grupos de jugadores por posición
@@ -14,9 +18,10 @@ public class Team {
 	private PlayersStick midStick;
 	private PlayersStick fwdStick;
 	
-	public Team(String name, String texturePath) {
+	public Team(String name, String texturePath, TeamType teamType) {
 		this.name = name;
-		texture = new Texture(texturePath);
+		this.teamType = teamType;
+		texture = new Texture(texturePath); // Va a ser el logo del equipo
 		sprite = new Sprite(texture);
 	}
 	
@@ -28,10 +33,22 @@ public class Team {
 		 */
 		float w = - pitchW / 2;
 		float h = - pitchH / 2;
-		gkStick = new PlayersStick(1, w*0.9f, h, 4, pitchH);
-		defStick = new PlayersStick(3, w*0.65f, h, 4, pitchH);
-		midStick = new PlayersStick(4, w*0.2f, h, 4, pitchH);
-		fwdStick = new PlayersStick(3, w*(-0.4f), h, 4, pitchH);
+		
+		gkStick = new PlayersStick(1, w*0.9f, h, 4, pitchH, Input.Keys.UP, Input.Keys.DOWN);
+		defStick = new PlayersStick(3, w*0.65f, h, 4, pitchH, Input.Keys.UP, Input.Keys.DOWN);
+		midStick = new PlayersStick(4, w*0.2f, h, 4, pitchH, Input.Keys.UP, Input.Keys.DOWN);
+		fwdStick = new PlayersStick(3, w*(-0.4f), h, 4, pitchH, Input.Keys.UP, Input.Keys.DOWN);
+		
+//		if (teamType == TeamType.HOME) {
+//			System.out.println("Somos home");
+//		} else {			
+//			// Invierte la posición de los jugadores
+//			System.out.println("Somos visitor");
+//			gkStick = new PlayersStick(1, w*(-0.1f), h, 4, pitchH, Input.Keys.Q, Input.Keys.A);
+//			defStick = new PlayersStick(3, w*(-0.35f), h, 4, pitchH, Input.Keys.W, Input.Keys.S);
+//			midStick = new PlayersStick(4, w*(-0.8f), h, 4, pitchH, Input.Keys.E, Input.Keys.D);
+//			fwdStick = new PlayersStick(3, w*0.6f, h, 4, pitchH, Input.Keys.R, Input.Keys.F);
+//		}
 	}
 	
 	public void init() {

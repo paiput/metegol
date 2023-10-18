@@ -6,13 +6,14 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.eblp.metegol.utils.MyRenderer;
 import com.eblp.metegol.utils.MyWorld;
 
 public class Ball {
-	private final int REGION_WIDTH = 32;
 	private final int REGION_HEIGHT = 32;
+	private final int REGION_WIDTH = 32;
 	private Texture texture;
 	private Sprite sprite;
 	private float x, y;
@@ -30,31 +31,44 @@ public class Ball {
 		sprite.setPosition(x, y);
 		sprite.setSize(w, h);
 		
-		BodyDef bodyDef = new BodyDef(); // Información sobre el cuerpo
+		// Información sobre el cuerpo
+		BodyDef bodyDef = new BodyDef(); 
 		bodyDef.type = BodyType.DynamicBody;
 		bodyDef.position.set(0, 0);
-		body = MyWorld.world.createBody(bodyDef); // Agrega el cuerpo al mundo
-		CircleShape ballShape = new CircleShape(); // Define la forma del cuerpo
+		
+		// Define la forma del cuerpo
+		CircleShape ballShape = new CircleShape(); 
 		ballShape.setRadius(8f);
-		body.createFixture(ballShape, 1.0f);
+		
+		FixtureDef fixtureDef = new FixtureDef();
+		fixtureDef.shape = ballShape;
+		fixtureDef.density = 1f;
+				
+		// Agrega el cuerpo al mundo
+		this.body = MyWorld.world.createBody(bodyDef); 
+		this.body.createFixture(fixtureDef).setUserData(this);
+		
 		ballShape.dispose();
-		//body.setLinearVelocity(-100, 0); // Velocidad inicial del cuerpo
+		
+		// Friccion del cuerpo con el suelo
+		//body.setLinearDamping(10f);
+		// Velocidad inicial del cuerpo
+		body.applyLinearImpulse(-500 * 32, 0, 0, 0, false);
+		//body.setLinearVelocity(-100, 0); 
 	}
 	
 	public void init() {
-		if (body.getPosition().x < -256) {
-			//System.out.println("Borde");
-			body.setLinearVelocity(100, 75);
-		} else if (body.getPosition().x > 256) {
-			body.setLinearVelocity(-100, 0);
-		}
+		if (body.getPosition().x < -256 || body.getPosition().x > 256) {
+			float vx = body.getLinearVelocity().x;
+			//body.setLinearVelocity(-vx, body.getLinearVelocity().y);
+			body.applyForceToCenter(-vx, body.getLinearVelocity().y, false);
+		} 
 		
-		if (body.getPosition().y > 180) {
+		if (body.getPosition().y > 180 || body.getPosition().y < -180) {
 			//System.out.println("border");
-			body.setLinearVelocity(0, -100);
-		} else if (body.getPosition().y < -180) {
-			body.setLinearVelocity(0, 100);
-		}
+			float vy = body.getLinearVelocity().y;
+			body.setLinearVelocity(body.getLinearVelocity().x, -vy);
+		} 
 		//System.out.println("x: " + body.getPosition().x);
 		//System.out.println("y: " + body.getPosition().y);
 	}
