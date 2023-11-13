@@ -49,7 +49,7 @@ public class MainMenuScreen implements Screen {
 		table.addActor(label);
 		
 		// Botón jugar
-		TextButton buttonPlay = new TextButton("Jugar", getSkin());
+		TextButton buttonPlay = new TextButton("Nueva partido", getSkin());
 		buttonPlay.setPosition(label.getOriginX(), label.getOriginY() - 50);
 		buttonPlay.setWidth(200);
 		buttonPlay.setHeight(40);

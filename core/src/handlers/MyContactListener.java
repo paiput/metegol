@@ -34,22 +34,27 @@ public class MyContactListener implements ContactListener {
 		if (fb.getUserData() instanceof Ball) {
 			float vx = fb.getBody().getLinearVelocity().x;
             float vy = fb.getBody().getLinearVelocity().y;
-//            System.out.println("Vel x: " + vx + " Vel y: " + vy);
+            System.out.println("Vel x: " + vx + " Vel y: " + vy);
             
             Player player = (Player) fa.getUserData();
             
             if (Math.abs(normal.x) > Math.abs(normal.y)) {
-            	vx = -vx;
+            	System.out.println("Cambia en X");
+            	//vx = -vx;
+            	vx *= -1;
             } else {
-            	vy = -vy;
+            	System.out.println("Cambia en Y");
+            	//vy = -vy;
+            	vy *= -1;
             }
             
-            if (normal.x > 0 && player.isKicking()) {
-            	fb.getBody().applyForceToCenter(50000, 500, false);
-            	System.out.println("Vel en x: " + vx);
+            if (player.isKicking()) {
+            	System.out.println("Pateando");
+            	fb.getBody().setLinearVelocity(vx*1.5f, vy*1.5f);
+            } else {
+            	System.out.println("Rebotando");
+            	fb.getBody().setLinearVelocity(vx*0.8f, vy*0.8f);
             }
-
-            fb.getBody().setLinearVelocity(vx, vy);
 		}
 //		System.out.println("fa: " + fa.getUserData().getClass());
 //		System.out.println("fb: " + fb.getUserData().getClass());

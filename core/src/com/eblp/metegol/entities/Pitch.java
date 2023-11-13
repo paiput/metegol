@@ -14,36 +14,36 @@ public class Pitch {
 	private Texture texture;
 	private int w, h;
 	
-	private int[][] borderPositions = { {0,0}, {0,1}, {1,0}, {0,1} };
+	private int[][] goalPositions = { {0,0}, {0,1} };
 	
-	public Body[] borders;
+	public Body[] goals;
 
 	public Pitch(int w, int h) {
 		texture = new Texture("pitch-2.jpg");
-		borders = new Body[4];
-		for (int i=0; i<4; i++) {
+		goals = new Body[2];
+		
+		for (int i=0; i<2; i++) {
+			System.out.println("i = " + i);
 			BodyDef bodyDef = new BodyDef(); // Información sobre el cuerpo
-			bodyDef.type = BodyType.StaticBody;
-			
-			bodyDef.position.set(borderPositions[i][0], borderPositions[i][1]);
-			borders[i] = MyWorld.world.createBody(bodyDef); // Agrega el cuerpo al mundo
+			bodyDef.type = BodyType.DynamicBody;
+			//bodyDef.position.set(goalPositions[i][0], goalPositions[i][1]);
+			bodyDef.position.set(55, 55);
 			PolygonShape polygonShape = new PolygonShape();
 			if (i % 2 == 0) {
 				// vertical
-				polygonShape.setAsBox(1, h/2);
+				polygonShape.setAsBox(5, h/2);
 			} else {
 				// horizontal
-				polygonShape.setAsBox(w/2, 1);
+				polygonShape.setAsBox(w/2, 5);
 			}
-			polygonShape.setAsBox(w/2, h/2); // Define la forma del cuerpo
+			
 			FixtureDef fixtureDef = new FixtureDef();
-			//fixtureDef.friction = .5f;
 			fixtureDef.density = 1;
 			fixtureDef.shape = polygonShape;
-			borders[i].createFixture(fixtureDef);
+			this.goals[i] = MyWorld.world.createBody(bodyDef); // Agrega el cuerpo al mundo
+			this.goals[i].createFixture(fixtureDef);
 			polygonShape.dispose();			
 		}
-		// TODO Auto-generated constructor stub
 		
 	}
 	

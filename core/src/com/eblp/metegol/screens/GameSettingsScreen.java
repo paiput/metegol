@@ -45,7 +45,7 @@ public class GameSettingsScreen implements Screen {
 				stage.addActor(table);
 				
 				// Etiqueta de texto
-				Label label = new Label("Configuración de partida", getSkin());
+				Label label = new Label("Ajustes de partido", getSkin());
 				table.addActor(label);
 				
 				// Botón jugar
@@ -63,7 +63,7 @@ public class GameSettingsScreen implements Screen {
 				table.addActor(buttonPlay);
 				
 				// Botón salir
-				TextButton buttonExit = new TextButton("Atrás", getSkin());
+				TextButton buttonExit = new TextButton("Volver", getSkin());
 				buttonExit.setPosition(label.getOriginX(), label.getOriginY() - 100);
 				buttonExit.setWidth(200);
 				buttonExit.setHeight(40);

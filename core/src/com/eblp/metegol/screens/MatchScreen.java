@@ -10,6 +10,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.eblp.metegol.Metegol;
 import com.eblp.metegol.entities.Ball;
+import com.eblp.metegol.entities.Pitch;
 import com.eblp.metegol.entities.Team;
 import com.eblp.metegol.utils.MyRenderer;
 import com.eblp.metegol.utils.MyWorld;
@@ -26,6 +27,7 @@ public class MatchScreen implements Screen {
 	
 	private Texture pitchImg;
 	
+	private Pitch pitch;
 	private Team team;
 	private Ball ball;
 
@@ -46,6 +48,7 @@ public class MatchScreen implements Screen {
 	
 	@Override
 	public void show() {
+		//pitch = new Pitch(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		ball = new Ball(-8, -8, 16, 16);
 		pitchImg = new Texture("pitch-2.jpg");
 		team = new Team("Velez", "pitch.png", TeamType.HOME);
@@ -106,7 +109,6 @@ public class MatchScreen implements Screen {
 
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
 		MyRenderer.batch.dispose();
 		pitchImg.dispose();
 		team.dispose();

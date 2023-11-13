@@ -19,8 +19,6 @@ public class LoadingScreen implements Screen {
 	private MyImage image;
 	private float screenOpacity = 0f;
 	
-	public static float PPM = 0.2f;
-	
 	public LoadingScreen(Metegol game) {
 		this.game = game;
 		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());

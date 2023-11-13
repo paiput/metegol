@@ -14,6 +14,7 @@ import com.eblp.metegol.utils.MyWorld;
 public class Ball {
 	private final int REGION_HEIGHT = 32;
 	private final int REGION_WIDTH = 32;
+	private boolean isGoal;
 	private Texture texture;
 	private Sprite sprite;
 	private float x, y;
@@ -28,9 +29,10 @@ public class Ball {
 		this.y = y;
 		this.w = w;
 		this.h = h;
+		this.isGoal = false;
 		sprite.setPosition(x, y);
 		sprite.setSize(w, h);
-		
+
 		// Información sobre el cuerpo
 		BodyDef bodyDef = new BodyDef(); 
 		bodyDef.type = BodyType.DynamicBody;
@@ -42,7 +44,7 @@ public class Ball {
 		
 		FixtureDef fixtureDef = new FixtureDef();
 		fixtureDef.shape = ballShape;
-		fixtureDef.density = 1f;
+		fixtureDef.density = 0.01f;
 				
 		// Agrega el cuerpo al mundo
 		this.body = MyWorld.world.createBody(bodyDef); 
@@ -51,26 +53,45 @@ public class Ball {
 		ballShape.dispose();
 		
 		// Friccion del cuerpo con el suelo
-		//body.setLinearDamping(10f);
+		body.setLinearDamping(0f);
+		//body.setAngularDamping(5f);
 		// Velocidad inicial del cuerpo
-		body.applyLinearImpulse(-500 * 32, 0, 0, 0, false);
-		//body.setLinearVelocity(-100, 0); 
+		body.setLinearVelocity(-100f, 0f); 
 	}
 	
 	public void init() {
-		if (body.getPosition().x < -256 || body.getPosition().x > 256) {
-			float vx = body.getLinearVelocity().x;
-			//body.setLinearVelocity(-vx, body.getLinearVelocity().y);
-			body.applyForceToCenter(-vx, body.getLinearVelocity().y, false);
+		boolean leftBorder = body.getPosition().x < -236;
+		boolean rightBorder = body.getPosition().x > 236;
+		boolean topBorder = body.getPosition().y > 160;
+		boolean bottomBorder = body.getPosition().y < -160;
+		
+		if (this.isGoal) {			
+			if (body.getPosition().x > 260 || body.getPosition().x < -260) {
+				System.out.println("GOOOOOLLL");
+				body.setTransform(0, 0, 0);
+				this.isGoal = false;
+			}
+			return;
+		}
+		
+		// Pasa por el arco
+		if ((leftBorder || rightBorder) && (body.getPosition().y < 20 && body.getPosition().y > -20)) {
+			System.out.println("ARCO");
+			this.isGoal = true;
+			return;
 		} 
 		
-		if (body.getPosition().y > 180 || body.getPosition().y < -180) {
-			//System.out.println("border");
+		// Rebota al colisionar con los bordes en x
+		if (leftBorder || rightBorder) {
+			float vx = body.getLinearVelocity().x;
+			body.setLinearVelocity(-vx, body.getLinearVelocity().y);
+		} 
+		
+		// Rebota el colisionar con los bordes en y
+		if (topBorder || bottomBorder) {
 			float vy = body.getLinearVelocity().y;
 			body.setLinearVelocity(body.getLinearVelocity().x, -vy);
-		} 
-		//System.out.println("x: " + body.getPosition().x);
-		//System.out.println("y: " + body.getPosition().y);
+		}
 	}
 	
 	public void draw() {

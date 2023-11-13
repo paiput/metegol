@@ -44,14 +44,14 @@ public class PlayersStick {
 			// Movimiento vertical del palo
 			if (Gdx.input.isKeyPressed(keyDown)) {
 				vel = -100;
-				// Bloquea los jugadores al llegar al borde de abajo
-				if (p.getY() < -h/2+p.getH()*pIndex + pIndex*h*0.15f) {
+				// Agrega 16 pixeles al limite de abajo para evitar que se pase la linea
+				if (p.getY() < -h/2+p.getH()*pIndex + pIndex*h*0.15f + 16) {
 					vel = 0;
 				}
 			} else if (Gdx.input.isKeyPressed(keyUp)) {
 				vel = 100;
 				// Bloquea los jugadores al llegar al borde de arriba
-				if (p.getY() > h/2 - (p.getH()*(players.length-pIndex) + (players.length-pIndex-1)*h*0.15f)) {
+				if (p.getY() > h/2 - (p.getH()*(players.length-pIndex) + (players.length-pIndex-1)*h*0.15f) + 15f) {
 					vel = 0;
 				}
 			} 
@@ -69,32 +69,10 @@ public class PlayersStick {
 			}
 			
 			
-			
-			
 			pIndex++;
 		}
 		
-		/*
-		// Frena los jugadores al llegar a los bordes de la pantalla
-		int pIndex = 0;
-		for (Player p : players) {
-			float vel = 0;
-			
-			// Bloquea los jugadores al llegar al borde de abajo
-			if (p.getY() < -h/2+p.getH()*pIndex + pIndex*h*0.15f) {
-				//p.setY(-h/2 + p.getH()*pIndex + pIndex*h*0.15f);
-				//p.body.setTransform(p.getX()+p.getH()/2, -h/2 + p.getH()*pIndex + pIndex*h*0.15f + p.getH()/2, 0);
-				p.body.setLinearVelocity(0, 1);
-			}
-			// Bloquea los jugadores al llegar al borde de arriba
-			if (p.getY() > h/2 - (p.getH()*(players.length-pIndex) + (players.length-pIndex-1)*h*0.15f)) {
-				//p.setY(h/2 - (p.getH()*(players.length-pIndex) + (players.length-pIndex-1)*h*0.15f));
-				//p.body.setTransform(p.getX()+p.getH()/2, h/2 - (p.getH()*(players.length-pIndex) + (players.length-pIndex-1)*h*0.15f) + p.getH()/2, 0);
-				p.body.setLinearVelocity(0, -1);
-			}
-			pIndex++;
-		}
-		
+		/*		
 		// Caso especial para el arquero
 				if (players.length == 1) {
 					Player gk = players[0];
