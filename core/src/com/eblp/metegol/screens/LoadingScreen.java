@@ -8,7 +8,6 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.eblp.metegol.Metegol;
 import com.eblp.metegol.utils.MyImage;
 import com.eblp.metegol.utils.MyRenderer;
-import com.eblp.metegol.utils.MyWorld;
 
 public class LoadingScreen implements Screen {
 	private ExtendViewport viewport;
@@ -41,7 +40,7 @@ public class LoadingScreen implements Screen {
 		processFade();
 		viewport.apply();
 		MyRenderer.batch.begin();
-		image.setPosition(Gdx.graphics.getWidth()/2-image.getWidth()/2, 0);
+		image.setPosition(Gdx.graphics.getWidth()/2-image.getWidth()/2, Gdx.graphics.getHeight()/2-image.getHeight()/2);
 		image.setSize(890/1.41f, 890);
 		image.draw();
 		MyRenderer.batch.end();

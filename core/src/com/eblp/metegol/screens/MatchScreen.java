@@ -2,57 +2,50 @@ package com.eblp.metegol.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.eblp.metegol.Metegol;
 import com.eblp.metegol.entities.Ball;
-import com.eblp.metegol.entities.Pitch;
 import com.eblp.metegol.entities.Team;
+import com.eblp.metegol.utils.MyImage;
 import com.eblp.metegol.utils.MyRenderer;
-import com.eblp.metegol.utils.MyWorld;
+import com.eblp.metegol.utils.Resources;
 
 import enums.TeamType;
-import handlers.MyContactListener;
 
 public class MatchScreen implements Screen {
 	private Metegol game;
 	private FitViewport viewport;
+	private OrthographicCamera camera;
+		
+	private MyImage pitch;
 	
-	// Para debugear las físicas
-	private Box2DDebugRenderer b2dr;
-	
-	private Texture pitchImg;
-	
-	private Pitch pitch;
 	private Team team;
 	private Ball ball;
 
 	public MatchScreen(Metegol game) {
 		this.game = game;
-		viewport = new FitViewport(640, 480);
+		camera = new OrthographicCamera();
+		camera.setToOrtho(false, Resources.SCREEN_W, Resources.SCREEN_H);
+		viewport = new FitViewport(Resources.SCREEN_W, Resources.SCREEN_H, camera);
 		
-		MyWorld.world = new World(new Vector2(0f, 0f), false);
-		MyWorld.world.setContactListener(new MyContactListener());
-		b2dr = new Box2DDebugRenderer();
-		
-
 		//team = new Team("Boca", "pitch.png", TeamType.VISITOR);
 		//team.setLineUp(pitchImg.getWidth(), pitchImg.getHeight());
 		
-		System.out.println("Width: " + Gdx.graphics.getWidth() + " Height: " + Gdx.graphics.getHeight());
+		System.out.println("Width: " + Resources.SCREEN_W + " Height: " + Resources.SCREEN_H);
 	}
 	
 	@Override
-	public void show() {
-		//pitch = new Pitch(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		ball = new Ball(-8, -8, 16, 16);
-		pitchImg = new Texture("pitch-2.jpg");
+	public void show() {		
+		pitch = new MyImage("pitch-2.jpg");
+		pitch.setSize(Resources.SCREEN_W * 0.75f, Resources.SCREEN_H * 0.75f);
+		pitch.setPosition(Resources.SCREEN_W/2 - pitch.getWidth()/2, Resources.SCREEN_H/2 - pitch.getHeight()/2);
+		
+		ball = new Ball(Resources.SCREEN_W/2-8, Resources.SCREEN_H/2-8, 16, 16);
+		
 		team = new Team("Velez", "pitch.png", TeamType.HOME);
-		team.setLineUp(pitchImg.getWidth(), pitchImg.getHeight());
+		team.setLineUp(pitch.getWidth(), pitch.getHeight());
 		System.out.println("mostrando pantalla MATCH");
 	}
 
@@ -61,34 +54,23 @@ public class MatchScreen implements Screen {
 		// Limpia la pantalla
 		MyRenderer.cleanScreen(0, 0, 0);
 		// Aplica el viewport
+		viewport.setCamera(camera);
 		viewport.apply();
-		// Usa la cámara del viewport, ya que es constante y ocupa toda la pantalla en todo momento
-		MyRenderer.batch.setProjectionMatrix(viewport.getCamera().combined);
 		
 		// Empieza a dibujar imágenes cargadas en el batch
+		MyRenderer.batch.setProjectionMatrix(viewport.getCamera().combined);
 		MyRenderer.batch.begin();
-		
-		// Dibuja la cancha en el centro de la pantalla
-		MyRenderer.batch.draw(pitchImg, -pitchImg.getWidth()/2, -pitchImg.getHeight()/2);
-        
+		pitch.draw();
 		ball.draw();
 		ball.init();
-		team.drawPlayers(pitchImg.getWidth(), pitchImg.getHeight());
+		team.drawPlayers(pitch.getWidth(), pitch.getHeight());
         team.init();
-        
         MyRenderer.batch.end();
-        
-        // Marca el contorno de los objetos a los que se aplican las físicas
-        b2dr.render(MyWorld.world, viewport.getCamera().combined);
-        // Velocidad y cantidad de calculos por frame (para las físicas)
-        MyWorld.world.step(1/60f, 6, 2);
 	}
 
 	@Override
 	public void resize(int width, int height) {
-		// TODO Auto-generated method stub
-		// super.resize(width, height); -> ni idea que hace
-		viewport.update(width, height);
+		viewport.update(width, height, true);
 	}
 
 	@Override
@@ -110,9 +92,8 @@ public class MatchScreen implements Screen {
 	@Override
 	public void dispose() {
 		MyRenderer.batch.dispose();
-		pitchImg.dispose();
+		pitch.dispose();
 		team.dispose();
-		MyWorld.world.dispose();
 	}
 
 }

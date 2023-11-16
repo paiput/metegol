@@ -21,6 +21,10 @@ public class MyImage {
 		return s.getWidth();
 	}
 	
+	public float getHeight() {
+		return s.getHeight();
+	}
+	
 	public void setSize(float w, float h) {
 		s.setSize(w, h);
 	}

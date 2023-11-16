@@ -4,14 +4,18 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.eblp.metegol.utils.MyRenderer;
+import com.eblp.metegol.utils.Resources;
 
 import enums.TeamType;
 
 public class Team {
 	private String name;
 	private TeamType teamType;
+	private int score = 0;
+	
 	private Texture texture;
 	private Sprite sprite;
+	
 	// Grupos de jugadores por posición
 	private PlayersStick gkStick;
 	private PlayersStick defStick;
@@ -26,18 +30,15 @@ public class Team {
 	}
 	
 	public void setLineUp(float pitchW, float pitchH) {
-		/* Como el fitViewport toma como x=0 y=0 el centro del viewport, 
-		 * para establecer el inicio el esquina inferior izquierda hay
-		 * que tomar el valor negativo de la mitad del espacio que vayamos
-		 * a utilizar
-		 */
-		float w = - pitchW / 2;
-		float h = - pitchH / 2;
+		float y = Resources.SCREEN_H/2 - pitchH/2;
+		float xi = Resources.SCREEN_W/2 - pitchW/2; // toma como referencia inicial el borde izquierdo de la cancha
 		
-		gkStick = new PlayersStick(1, w*0.9f, h, 4, pitchH, Input.Keys.UP, Input.Keys.DOWN);
-		defStick = new PlayersStick(3, w*0.65f, h, 4, pitchH, Input.Keys.UP, Input.Keys.DOWN);
-		midStick = new PlayersStick(4, w*0.2f, h, 4, pitchH, Input.Keys.UP, Input.Keys.DOWN);
-		fwdStick = new PlayersStick(3, w*(-0.4f), h, 4, pitchH, Input.Keys.UP, Input.Keys.DOWN);
+		System.out.println("Pitch Height: " + pitchH);
+		
+		gkStick = new PlayersStick(1, xi + pitchW*0.05f, y, 4, pitchH, Input.Keys.UP, Input.Keys.DOWN);
+		defStick = new PlayersStick(3, xi + pitchW*0.15f, y, 4, pitchH, Input.Keys.UP, Input.Keys.DOWN);
+		midStick = new PlayersStick(4, xi + pitchW*0.4f, y, 4, pitchH, Input.Keys.UP, Input.Keys.DOWN);
+		fwdStick = new PlayersStick(3, xi + pitchW*0.7f, y, 4, pitchH, Input.Keys.UP, Input.Keys.DOWN);
 		
 //		if (teamType == TeamType.HOME) {
 //			System.out.println("Somos home");

@@ -3,8 +3,8 @@ package com.eblp.metegol.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -13,14 +13,15 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.eblp.metegol.Metegol;
+import com.eblp.metegol.components.MyTextButton;
 import com.eblp.metegol.utils.MyRenderer;
 
 public class MainMenuScreen implements Screen {
 	private Metegol game;
 	private Camera camera;
 	// Skin de los elementos de ui
+	private Table table;
 	private Skin skin;
 	private Stage stage;
 	
@@ -37,11 +38,11 @@ public class MainMenuScreen implements Screen {
 	public void show() {
 		System.out.println("mostrando pantalla MAIN MENU");
 		// Tabla para los elementos del menú
-		Table table = new Table();
-		table.setPosition(500, Gdx.graphics.getHeight() / 2);
+		table = new Table();
 		// La tabla ocupa toda la pantalla
-		table.setFillParent(true);
-		table.setHeight(300);
+		//table.setFillParent(true);
+		table.setWidth(200);
+		table.setHeight(200);
 		stage.addActor(table);
 		
 		// Etiqueta de texto
@@ -49,25 +50,25 @@ public class MainMenuScreen implements Screen {
 		table.addActor(label);
 		
 		// Botón jugar
-		TextButton buttonPlay = new TextButton("Nueva partido", getSkin());
+		TextButton buttonPlay = new TextButton("Nuevo partido", getSkin());
 		buttonPlay.setPosition(label.getOriginX(), label.getOriginY() - 50);
 		buttonPlay.setWidth(200);
 		buttonPlay.setHeight(40);
 		buttonPlay.addListener(new InputListener() {
 			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("click en jugar");
+				System.out.println("click en nuevo partido");
 				game.setScreen(new GameSettingsScreen(game));
-				//game.setScreen(new MatchScreen(game));
 				return false;
 			}
 		});
 		table.addActor(buttonPlay);
 		
 		// Botón salir
-		TextButton buttonExit = new TextButton("Salir", getSkin());
+		final TextButton buttonExit = new TextButton("Salir", getSkin());
 		buttonExit.setPosition(label.getOriginX(), label.getOriginY() - 100);
 		buttonExit.setWidth(200);
 		buttonExit.setHeight(40);
+		// buttonExit.getLabel().setFontScale(4); para agrandar el texto
 		buttonExit.addListener(new InputListener() {
 			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
 				System.out.println("click en salir");
@@ -76,22 +77,27 @@ public class MainMenuScreen implements Screen {
 			}
 		});
 		table.addActor(buttonExit);
+		
+		System.out.println("Graphics w: " + Gdx.graphics.getWidth());
+		System.out.println("table w: " + table.getWidth());
 	}
 
 	@Override
 	public void render(float delta) {
 		MyRenderer.cleanScreen(0, 0, 0);
+		MyRenderer.batch.begin();
 		// Usa la cámara del viewport, ya que es constante y ocupa toda la pantalla en todo momento
 		stage.getViewport().apply();
 		stage.act();
 		stage.draw();
+		table.setPosition(Gdx.graphics.getWidth()/2 - table.getWidth()/2, Gdx.graphics.getHeight() / 2);
 		Gdx.input.setInputProcessor(stage);
+		MyRenderer.batch.end();
 	}	
 
 	@Override
 	public void resize(int width, int height) {
-		// TODO Auto-generated method stub
-		stage.getViewport().update(width, height, true);
+		stage.getViewport().update(width, height, false);
 	}
 
 	@Override

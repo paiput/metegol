@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.eblp.metegol.utils.MyRenderer;
+import com.eblp.metegol.utils.Resources;
 
 public class PlayersStick {
 	private final int REGION_WIDTH = 16;
@@ -26,6 +27,7 @@ public class PlayersStick {
 		this.keyDown = keyDown;
 		texture = new Texture("stick-spritesheet.png");
 		sprite = new Sprite(texture, 0, 0, REGION_WIDTH, REGION_HEIGHT);
+		
 		players = new Player[playersCount];
 		int playerSize = 32;
 		for (int i=0; i<playersCount; i++) {
@@ -38,26 +40,25 @@ public class PlayersStick {
 	
 	public void init() {
 		
+		float bottom = Resources.SCREEN_H/2 - h/2;
+		float top = Resources.SCREEN_H/2 + h/2;
+		
 		int pIndex = 0;
 		for (Player p : players) {
-			float vel = 0;
+			float vel = 5;
+			
 			// Movimiento vertical del palo
 			if (Gdx.input.isKeyPressed(keyDown)) {
-				vel = -100;
-				// Agrega 16 pixeles al limite de abajo para evitar que se pase la linea
-				if (p.getY() < -h/2+p.getH()*pIndex + pIndex*h*0.15f + 16) {
-					vel = 0;
+				// Bloquea los jugadores al llegar al borde de abajo
+				if (p.getY() > bottom + p.getH()*pIndex + (pIndex*h*0.15f)) {
+					p.moveY(-vel);
 				}
 			} else if (Gdx.input.isKeyPressed(keyUp)) {
-				vel = 100;
 				// Bloquea los jugadores al llegar al borde de arriba
-				if (p.getY() > h/2 - (p.getH()*(players.length-pIndex) + (players.length-pIndex-1)*h*0.15f) + 15f) {
-					vel = 0;
+				if (p.getY() < top - (p.getH()*(players.length-pIndex) + (players.length-pIndex-1)*h*0.15f)) {
+					p.moveY(vel);
 				}
 			} 
-			
-			p.body.setLinearVelocity(0, vel);
-
 			
 			// Cambia la region cuando patea 
 			if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
@@ -72,21 +73,15 @@ public class PlayersStick {
 			pIndex++;
 		}
 		
-		/*		
 		// Caso especial para el arquero
-				if (players.length == 1) {
-					Player gk = players[0];
-					if (gk.getY() > h/10) {
-						//gk.setY(h/10);
-						gk.body.setLinearVelocity(0, -10);
-					}
-					if (gk.getY() < -h/5) {
-						//gk.setY(-h/5);
-						gk.body.setLinearVelocity(0, 10);
-					}
-				}
-				*/
-		
+		if (players.length == 1) {
+			Player gk = players[0];
+			if (gk.getY() > bottom + h*0.6f - gk.getH()/2) {
+				gk.setY(bottom + h*0.6f - gk.getH()/2);				
+			} else if (gk.getY() < bottom + h*0.4f - gk.getH()/2) {
+				gk.setY(bottom + h*0.4f - gk.getH()/2);
+			}
+		}		
 	}
 	
 	public void draw() {
