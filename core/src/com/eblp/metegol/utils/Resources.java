@@ -7,4 +7,5 @@ public class Resources {
 	public static float SCREEN_W = Gdx.graphics.getWidth();
 	public static float SCREEN_H = Gdx.graphics.getHeight();
 
+	public static final String FONT = "fonts/VT323-Regular.ttf";
 }

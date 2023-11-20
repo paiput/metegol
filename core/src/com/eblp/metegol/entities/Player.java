@@ -18,7 +18,7 @@ public class Player {
 	private int w, h;
 
 	public Player(TeamType teamType, StickType type, float x, float y, int w, int h) {
-		texture = new Texture(teamType == TeamType.HOME ? "player-blue-spritesheet-2.png" : "player-red-spritesheet-inverted.png");
+		texture = new Texture(teamType == TeamType.HOME ? "player-blue-spritesheet-2.png" : "player-red-spritesheet.png");
 		sprite = new Sprite(texture, 0, 0, REGION_WIDTH, REGION_HEIGHT);
 		this.type = type;
 		this.w = w;

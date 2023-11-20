@@ -1,9 +1,14 @@
 package com.eblp.metegol.entities;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.eblp.metegol.utils.Constants;
+import com.eblp.metegol.utils.MyImage;
 import com.eblp.metegol.utils.MyRenderer;
+import com.eblp.metegol.utils.MyText;
 import com.eblp.metegol.utils.Resources;
 
 import enums.StickType;
@@ -12,10 +17,10 @@ import enums.TeamType;
 public class Team {
 	private String name;
 	private TeamType teamType;
+	private MyText scoreText;
 	private int score = 0;
 	
-	private Texture texture;
-	private Sprite sprite;
+	private MyImage image;
 	
 	// Grupos de jugadores por posición
 	private PlayersStick gkStick;
@@ -26,8 +31,13 @@ public class Team {
 	public Team(String name, String texturePath, TeamType teamType) {
 		this.name = name;
 		this.teamType = teamType;
-		texture = new Texture(texturePath); // Va a ser el logo del equipo
-		sprite = new Sprite(texture);
+		
+		image = new MyImage(texturePath);
+		image.setSize(64, 64);
+		image.setPosition(teamType == TeamType.HOME ? Gdx.graphics.getWidth()/2 - Gdx.graphics.getWidth()*0.75f/2 : Gdx.graphics.getWidth()/2 + Gdx.graphics.getWidth()*0.75f/2 - image.getWidth(), Gdx.graphics.getHeight()/2 + Gdx.graphics.getHeight()*0.75f/2);
+		
+		scoreText = new MyText(Integer.toString(score), Resources.FONT, 64, Color.WHITE);
+		scoreText.setPosition(teamType == TeamType.HOME ? Gdx.graphics.getWidth()/2 - Gdx.graphics.getWidth()*0.75f/2 + image.getWidth(): Gdx.graphics.getWidth()/2 + Gdx.graphics.getWidth()*0.75f/2 - scoreText.getWidth() - image.getWidth(), Gdx.graphics.getHeight()/2 + Gdx.graphics.getHeight()*0.75f/2 + scoreText.getHeight() + 15);
 	}
 	
 	public void setLineUp(float pitchW, float pitchH) {
@@ -59,6 +69,29 @@ public class Team {
 		fwdStick.init();
 	}
 	
+	public void detectColission(Ball ball) {
+		for (Player p : getAllPlayers()) {
+        	boolean contactX = (ball.getX() >= p.getX() - Constants.HITBOX) && (ball.getX() <= p.getX() + Constants.HITBOX);
+        	boolean contactY = (ball.getY() >= p.getY() - Constants.HITBOX) && (ball.getY() <= p.getY() + Constants.HITBOX);
+        	if (contactX && contactY) {
+        		p.kick(); // Animacion de patear
+        		if (p.getType() != StickType.FWD) {
+        			// Dirije la pelota en diagonal hacia arriba o hacia abajo aleatoriamente
+        			float dir = (float)Math.round(Math.random());
+        			ball.applyImpulse(teamType == TeamType.HOME ? 1 : -1, dir == 0 ? 1 : -1);
+        		} else {
+        			ball.goToGoal(teamType == TeamType.HOME ? TeamType.VISITOR : TeamType.HOME);
+        		}
+        	}
+        }
+	}
+	
+	public void scoreGoal() {
+		System.out.println("Goool de " + name);
+		score += 1;
+		scoreText.setText(Integer.toString(score));
+	}
+	
 	public Player[] getAllPlayers() {
 		Player[] players = new Player[11];
 		System.arraycopy(gkStick.getPlayers(), 0, players, 0, 1);
@@ -69,7 +102,11 @@ public class Team {
 	}
 	
 	public void drawLogo() {
-		sprite.draw(MyRenderer.batch);
+		image.draw();
+	}
+	
+	public void drawScore() {
+		scoreText.draw();
 	}
 	
 	public void drawPlayers() {
@@ -80,10 +117,10 @@ public class Team {
 	}
 
 	public void dispose() {
-		texture.dispose();
 		gkStick.dispose();
 		defStick.dispose();
 		midStick.dispose();
 		fwdStick.dispose();
+		image.dispose();
 	}
 }

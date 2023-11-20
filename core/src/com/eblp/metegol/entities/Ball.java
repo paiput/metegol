@@ -10,7 +10,7 @@ import enums.TeamType;
 public class Ball {
 	private final int REGION_HEIGHT = 32;
 	private final int REGION_WIDTH = 32;
-	private boolean isGoal;
+	private int goalSide = 0;
 	private Texture texture;
 	private Sprite sprite;
 	private int w, h;
@@ -24,31 +24,25 @@ public class Ball {
 		sprite = new Sprite(texture, 0, 0, REGION_WIDTH, REGION_HEIGHT);
 		this.w = w;
 		this.h = h;
-		this.isGoal = false;
+		goalSide = 0;
 		sprite.setPosition(x, y);
 		sprite.setSize(w, h);
 	}
 	
-	public void init() {
+	public void handleCollisions() {
 		boolean leftBorder = sprite.getX() <= Resources.SCREEN_W/2 - Resources.SCREEN_W * 0.75f/2;
 		boolean rightBorder = sprite.getX() >= Resources.SCREEN_W/2 + Resources.SCREEN_W * 0.75f/2 - w;
 		boolean topBorder = sprite.getY() >= Resources.SCREEN_H/2 + Resources.SCREEN_H * 0.75f/2 - h;
 		boolean bottomBorder = sprite.getY() <= Resources.SCREEN_H/2 - Resources.SCREEN_H * 0.75f/2;
 		
-		if (this.isGoal) {			
-			if (sprite.getX() > 260 || sprite.getX() < -260) {
-				System.out.println("GOOOOOLLL");
-				// falta centrar pelota en cancha
-				this.isGoal = false;
-			}
-			return;
-		}
+		goalSide = 0;
 		
 		// Pasa por el arco
 		if ((leftBorder || rightBorder) && (sprite.getY() < goalTop && sprite.getY() > goalBottom)) {
-			System.out.println("ARCO GOOOOOOOOOL");
-			//return;
+			if (leftBorder) goalSide = -1;
+			else if (rightBorder) goalSide = 1;
 		} 
+		
 		
 		// Rebota al colisionar con los bordes en x
 		if (rightBorder || leftBorder) dirX *= -1;
@@ -74,8 +68,12 @@ public class Ball {
 		applyImpulse(getDistanceFromGoalX(team)/60, -getDistanceFromGoalY()/60);
 	}
 	
-	public void aimTo(float x, float y) {
-		
+	public boolean isGoal() {
+		return goalSide == -1 || goalSide == 1;
+	}
+	
+	public int getGoalSide() {
+		return goalSide;
 	}
 	
 	public void applyImpulse(float x, float y) {
