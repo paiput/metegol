@@ -15,14 +15,14 @@ public class Metegol extends Game {
 		this.setScreen(new LoadingScreen(this));
 	}
 
-//	@Override
-//	public void render () {        
-//		super.render();
-//	}
+	@Override
+	public void render () {        
+		super.render();
+	}
 	
 	@Override
 	public void resize(int width, int height) {
-		// super.resize(width, height); -> ni idea que hace
+		super.resize(width, height);
 	}
 	
 	@Override

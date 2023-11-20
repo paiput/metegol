@@ -1,9 +1,11 @@
 package com.eblp.metegol.entities;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.eblp.metegol.utils.MyRenderer;
+import com.eblp.metegol.utils.Resources;
+
+import enums.TeamType;
 
 public class Ball {
 	private final int REGION_HEIGHT = 32;
@@ -12,7 +14,10 @@ public class Ball {
 	private Texture texture;
 	private Sprite sprite;
 	private int w, h;
-	private float dirX = 0, dirY = 2;
+	private float dirX = 1, dirY = 1;
+	
+	private final float goalTop = Resources.SCREEN_H/2 + 20;
+	private final float goalBottom = Resources.SCREEN_H/2 - 20;
 	
 	public Ball(float x, float y, int w, int h) {
 		texture = new Texture("ball.png");
@@ -25,49 +30,65 @@ public class Ball {
 	}
 	
 	public void init() {
-		boolean leftBorder = sprite.getX() <= Gdx.graphics.getWidth()/2 - Gdx.graphics.getWidth() * 0.75f/2;
-		boolean rightBorder = sprite.getX() >= Gdx.graphics.getWidth()/2 + Gdx.graphics.getWidth() * 0.75f/2 - w;
-		boolean topBorder = sprite.getY() >= Gdx.graphics.getHeight()/2 + Gdx.graphics.getHeight() * 0.75f/2 - h;
-		boolean bottomBorder = sprite.getY() <= Gdx.graphics.getHeight()/2 - Gdx.graphics.getHeight() * 0.75f/2;
+		boolean leftBorder = sprite.getX() <= Resources.SCREEN_W/2 - Resources.SCREEN_W * 0.75f/2;
+		boolean rightBorder = sprite.getX() >= Resources.SCREEN_W/2 + Resources.SCREEN_W * 0.75f/2 - w;
+		boolean topBorder = sprite.getY() >= Resources.SCREEN_H/2 + Resources.SCREEN_H * 0.75f/2 - h;
+		boolean bottomBorder = sprite.getY() <= Resources.SCREEN_H/2 - Resources.SCREEN_H * 0.75f/2;
 		
 		if (this.isGoal) {			
 			if (sprite.getX() > 260 || sprite.getX() < -260) {
 				System.out.println("GOOOOOLLL");
-				// centrar pelota en cancha
+				// falta centrar pelota en cancha
 				this.isGoal = false;
 			}
 			return;
 		}
 		
 		// Pasa por el arco
-		if ((leftBorder || rightBorder) && (sprite.getY() < 20 && sprite.getY() > -20)) {
-			System.out.println("ARCO");
-			this.isGoal = true;
-			return;
+		if ((leftBorder || rightBorder) && (sprite.getY() < goalTop && sprite.getY() > goalBottom)) {
+			System.out.println("ARCO GOOOOOOOOOL");
+			//return;
 		} 
 		
 		// Rebota al colisionar con los bordes en x
-		if (rightBorder) {
-			// invertir direccion de la peltoa
-			System.out.println("Borde lateral");
-			dirX = -1;
-		} else if (leftBorder) {
-			dirX = 1;
-		} 
+		if (rightBorder || leftBorder) dirX *= -1;
 		
 		// Rebota el colisionar con los bordes en y
-		if (topBorder) {
-			System.out.println("Border vertical");
-			dirY = -1;
-			// invertir direccion de la pelota
-		} else if (bottomBorder) {
-			dirY = 1;
-		}
-		
-		
+		if (topBorder || bottomBorder) dirY *= -1;
 		
 		sprite.setX(sprite.getX() + dirX);
 		sprite.setY(sprite.getY() + dirY);
+	}
+	
+	public float getDistanceFromGoalX(TeamType team) {
+		float pitch = Resources.SCREEN_W * 0.75f / 2;
+		float border = team == TeamType.VISITOR ? pitch : -pitch;
+		return Resources.SCREEN_W/2 + border - sprite.getX();
+	}
+	
+	public float getDistanceFromGoalY() {
+		return sprite.getY() - Resources.SCREEN_H/2;
+	}
+	
+	public void goToGoal(TeamType team) {
+		applyImpulse(getDistanceFromGoalX(team)/60, -getDistanceFromGoalY()/60);
+	}
+	
+	public void aimTo(float x, float y) {
+		
+	}
+	
+	public void applyImpulse(float x, float y) {
+		dirX = x;
+		dirY = y;
+	}
+	
+	public float getX() {
+		return sprite.getX();
+	}
+	
+	public float getY() {
+		return sprite.getY();
 	}
 	
 	public void draw() {

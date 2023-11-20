@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.eblp.metegol.utils.MyRenderer;
 import com.eblp.metegol.utils.Resources;
 
+import enums.StickType;
 import enums.TeamType;
 
 public class Team {
@@ -35,21 +36,20 @@ public class Team {
 		
 		System.out.println("Pitch Height: " + pitchH);
 		
-		gkStick = new PlayersStick(1, xi + pitchW*0.05f, y, 4, pitchH, Input.Keys.UP, Input.Keys.DOWN);
-		defStick = new PlayersStick(3, xi + pitchW*0.15f, y, 4, pitchH, Input.Keys.UP, Input.Keys.DOWN);
-		midStick = new PlayersStick(4, xi + pitchW*0.4f, y, 4, pitchH, Input.Keys.UP, Input.Keys.DOWN);
-		fwdStick = new PlayersStick(3, xi + pitchW*0.7f, y, 4, pitchH, Input.Keys.UP, Input.Keys.DOWN);
-		
-//		if (teamType == TeamType.HOME) {
-//			System.out.println("Somos home");
-//		} else {			
-//			// Invierte la posición de los jugadores
-//			System.out.println("Somos visitor");
-//			gkStick = new PlayersStick(1, w*(-0.1f), h, 4, pitchH, Input.Keys.Q, Input.Keys.A);
-//			defStick = new PlayersStick(3, w*(-0.35f), h, 4, pitchH, Input.Keys.W, Input.Keys.S);
-//			midStick = new PlayersStick(4, w*(-0.8f), h, 4, pitchH, Input.Keys.E, Input.Keys.D);
-//			fwdStick = new PlayersStick(3, w*0.6f, h, 4, pitchH, Input.Keys.R, Input.Keys.F);
-//		}
+		if (teamType == TeamType.HOME) {
+			System.out.println("Somos home");
+			gkStick = new PlayersStick(TeamType.HOME, StickType.GK, 1, xi + pitchW*0.05f, y, 4, pitchH, Input.Keys.UP, Input.Keys.DOWN);
+			defStick = new PlayersStick(TeamType.HOME, StickType.DEF, 3, xi + pitchW*0.15f, y, 4, pitchH, Input.Keys.UP, Input.Keys.DOWN);
+			midStick = new PlayersStick(TeamType.HOME, StickType.MID, 4, xi + pitchW*0.4f, y, 4, pitchH, Input.Keys.UP, Input.Keys.DOWN);
+			fwdStick = new PlayersStick(TeamType.HOME, StickType.FWD, 3, xi + pitchW*0.7f, y, 4, pitchH, Input.Keys.UP, Input.Keys.DOWN);
+		} else {			
+			// Invierte la posición de los jugadores
+			System.out.println("Somos visitor");
+			gkStick = new PlayersStick(TeamType.VISITOR, StickType.GK, 1, xi + pitchW*0.95f, y, 4, pitchH, Input.Keys.W, Input.Keys.S);
+			defStick = new PlayersStick(TeamType.VISITOR, StickType.DEF, 3, xi + pitchW*0.85f, y, 4, pitchH, Input.Keys.W, Input.Keys.S);
+			midStick = new PlayersStick(TeamType.VISITOR, StickType.MID, 4, xi + pitchW*0.6f, y, 4, pitchH, Input.Keys.W, Input.Keys.S);
+			fwdStick = new PlayersStick(TeamType.VISITOR, StickType.FWD, 3, xi + pitchW*0.3f, y, 4, pitchH, Input.Keys.W, Input.Keys.S);
+		}
 	}
 	
 	public void init() {
@@ -59,11 +59,20 @@ public class Team {
 		fwdStick.init();
 	}
 	
+	public Player[] getAllPlayers() {
+		Player[] players = new Player[11];
+		System.arraycopy(gkStick.getPlayers(), 0, players, 0, 1);
+		System.arraycopy(defStick.getPlayers(), 0, players, 1, 3);
+		System.arraycopy(midStick.getPlayers(), 0, players, 4, 4);
+		System.arraycopy(fwdStick.getPlayers(), 0, players, 8, 3);
+		return players;
+	}
+	
 	public void drawLogo() {
 		sprite.draw(MyRenderer.batch);
 	}
 	
-	public void drawPlayers(float pitchW, float pitchH) {
+	public void drawPlayers() {
 		gkStick.draw();
 		defStick.draw();
 		midStick.draw();

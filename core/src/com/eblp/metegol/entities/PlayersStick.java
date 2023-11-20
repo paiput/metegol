@@ -4,27 +4,31 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.Vector2;
 import com.eblp.metegol.utils.MyRenderer;
 import com.eblp.metegol.utils.Resources;
+
+import enums.StickType;
+import enums.TeamType;
 
 public class PlayersStick {
 	private final int REGION_WIDTH = 16;
 	private final int REGION_HEIGHT = 64;
+	private int keyUp, keyDown;
+	private Player[] players;
+	private Texture texture;
+	private StickType type;
+	private Sprite sprite;
 	private float x, y;
 	private float w, h;
-	private int keyUp, keyDown;
-	private Texture texture;
-	private Sprite sprite;
-	private Player[] players;
 
-	public PlayersStick(int playersCount, float x, float y, float w, float h, int keyUp, int keyDown) {
+	public PlayersStick(TeamType teamType, StickType st, int playersCount, float x, float y, float w, float h, int keyUp, int keyDown) {
 		this.x = x;
 		this.y = y;
 		this.w = w;
 		this.h = h;
 		this.keyUp = keyUp;
 		this.keyDown = keyDown;
+		this.type = st;
 		texture = new Texture("stick-spritesheet.png");
 		sprite = new Sprite(texture, 0, 0, REGION_WIDTH, REGION_HEIGHT);
 		
@@ -32,7 +36,7 @@ public class PlayersStick {
 		int playerSize = 32;
 		for (int i=0; i<playersCount; i++) {
 			System.out.println("Player " + i + " y axis: " + (y+i*playerSize+i*h*0.15f));
-			players[i] = new Player(x-playerSize/2+w/2, y+i*playerSize+i*h*0.15f, playerSize, playerSize);
+			players[i] = new Player(teamType, st, x-playerSize/2+w/2, y+i*playerSize+i*h*0.15f, playerSize, playerSize);
 		}
 		sprite.setPosition(x, y);
 		sprite.setSize(w, h);
@@ -82,6 +86,14 @@ public class PlayersStick {
 				gk.setY(bottom + h*0.4f - gk.getH()/2);
 			}
 		}		
+	}
+	
+	public Player[] getPlayers() {
+		return players;
+	}
+	
+	public StickType getStickType() {
+		return type;
 	}
 	
 	public void draw() {

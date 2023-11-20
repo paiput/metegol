@@ -58,6 +58,7 @@ public class MainMenuScreen implements Screen {
 			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
 				System.out.println("click en nuevo partido");
 				game.setScreen(new GameSettingsScreen(game));
+				dispose();
 				return false;
 			}
 		});
@@ -72,6 +73,7 @@ public class MainMenuScreen implements Screen {
 		buttonExit.addListener(new InputListener() {
 			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
 				System.out.println("click en salir");
+				dispose();
 				System.exit(0);
 				return false;
 			}

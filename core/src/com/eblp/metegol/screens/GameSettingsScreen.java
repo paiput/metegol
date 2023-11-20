@@ -61,6 +61,7 @@ public class GameSettingsScreen implements Screen {
 			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
 				System.out.println("click en jugar");
 				game.setScreen(new MatchScreen(game));
+				dispose();
 				return false;
 			}
 		});
@@ -75,6 +76,7 @@ public class GameSettingsScreen implements Screen {
 			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
 				System.out.println("click en atrás");
 				game.setScreen(new MainMenuScreen(game));
+				dispose();
 				return false;
 			}
 		});

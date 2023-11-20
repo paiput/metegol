@@ -37,6 +37,10 @@ public class MyImage {
 		s.setAlpha(a);
 	}
 	
+	public void rotate(float deg) {
+		s.rotate(deg);
+	}
+	
 	public void dispose() {
 		t.dispose();
 	}

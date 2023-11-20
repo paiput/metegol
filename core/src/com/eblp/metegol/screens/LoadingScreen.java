@@ -28,8 +28,7 @@ public class LoadingScreen implements Screen {
 	
 	@Override
 	public void show() {
-		// Initialize resources and load assets here
-		System.out.println("mostrando pantalla LOADING");
+		viewport.apply();
 		image = new MyImage("Pixelgol.jpg");
 		image.setOpacity(0);
 	}
@@ -38,7 +37,6 @@ public class LoadingScreen implements Screen {
 	public void render(float delta) {
 		MyRenderer.cleanScreen(1, 1, 1);
 		processFade();
-		viewport.apply();
 		MyRenderer.batch.begin();
 		image.setPosition(Gdx.graphics.getWidth()/2-image.getWidth()/2, Gdx.graphics.getHeight()/2-image.getHeight()/2);
 		image.setSize(890/1.41f, 890);
@@ -50,6 +48,7 @@ public class LoadingScreen implements Screen {
 		if (screenOpacity >= 1) {
 			//game.setScreen(new MatchScreen(game));
 			game.setScreen(new MainMenuScreen(game));
+			dispose();
 			return;
 		}
 		image.setOpacity(screenOpacity);
