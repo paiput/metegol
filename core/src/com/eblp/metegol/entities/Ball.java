@@ -43,7 +43,6 @@ public class Ball {
 			else if (rightBorder) goalSide = 1;
 		} 
 		
-		
 		// Rebota al colisionar con los bordes en x
 		if (rightBorder || leftBorder) dirX *= -1;
 		
@@ -74,6 +73,10 @@ public class Ball {
 	
 	public int getGoalSide() {
 		return goalSide;
+	}
+	
+	public void putOnCenter() {
+		sprite.setPosition(Resources.SCREEN_W/2-8, Resources.SCREEN_H/2-8);
 	}
 	
 	public void applyImpulse(float x, float y) {

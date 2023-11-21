@@ -18,11 +18,13 @@ public class MatchScreen implements Screen {
 	private Metegol game;
 	private FitViewport viewport;
 	private MyImage pitch;
-	private MyImage hGoal, vGoal;
+	private MyImage hGoal, vGoal; // Arcos
+	private MyText goalAlert;
 	
 	private Team hTeam, vTeam;
-	private MyText hScore, vScore;
 	private Ball ball;
+	
+	private float goalAnimation = 0;
 
 	public MatchScreen(Metegol game) {
 		this.game = game;
@@ -62,7 +64,10 @@ public class MatchScreen implements Screen {
 		
 		// Equipo visitante
 		vTeam = new Team("Independiente", "escudo-independiente-pixel.png", TeamType.VISITOR);
-		vTeam.setLineUp(pitch.getWidth(), pitch.getHeight());		
+		vTeam.setLineUp(pitch.getWidth(), pitch.getHeight());	
+		
+		goalAlert = new MyText("Gooool", Resources.FONT, 128, Color.YELLOW);
+		goalAlert.setPosition(vw/2-goalAlert.getWidth()/2, vh/2+goalAlert.getHeight()/2);
 	}
 
 	@Override
@@ -86,7 +91,14 @@ public class MatchScreen implements Screen {
         vTeam.drawScore();
         
         // Gestiona rebote de pelota en los bordes y deteccion de gol
-        ball.handleCollisions();
+        if (ball.isGoal() && goalAnimation < 1) {
+        	goalAnimation += 0.01f;
+        	goalAlert.draw();
+        	MyRenderer.batch.end();
+        	ball.putOnCenter();
+        	return;
+        }
+        ball.handleCollisions();        	
         if (ball.isGoal()) {
         	int side = ball.getGoalSide();
         	if (side == -1) vTeam.scoreGoal();
@@ -98,8 +110,8 @@ public class MatchScreen implements Screen {
         vTeam.init();
         
         // Gestiona interseccion entre jugador y pelota
-        hTeam.detectColission(ball);
-        vTeam.detectColission(ball);
+        hTeam.detectCollision(ball);
+        vTeam.detectCollision(ball);
         
         MyRenderer.batch.end();
 	}
@@ -131,8 +143,6 @@ public class MatchScreen implements Screen {
 		pitch.dispose();
 		hTeam.dispose();
 		vTeam.dispose();
-		hScore.dispose();
-		vScore.dispose();
 	}
 
 }

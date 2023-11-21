@@ -25,6 +25,18 @@ public class MyText {
 		layout.setText(font, text);
 	}
 	
+	public MyText(String text, String fontPath, int size, Color color, Color shadow) {
+		this.text = text;
+		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal(fontPath));
+		FreeTypeFontParameter parameter = new FreeTypeFontParameter();
+		parameter.size = size;
+		parameter.color = color;
+		parameter.shadowColor = shadow;
+		font = generator.generateFont(parameter);
+		layout = new GlyphLayout();
+		layout.setText(font, text);
+	}
+	
 	public float getY() {
 		return y;
 	}

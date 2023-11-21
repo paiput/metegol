@@ -69,7 +69,7 @@ public class Team {
 		fwdStick.init();
 	}
 	
-	public void detectColission(Ball ball) {
+	public void detectCollision(Ball ball) {
 		for (Player p : getAllPlayers()) {
         	boolean contactX = (ball.getX() >= p.getX() - Constants.HITBOX) && (ball.getX() <= p.getX() + Constants.HITBOX);
         	boolean contactY = (ball.getY() >= p.getY() - Constants.HITBOX) && (ball.getY() <= p.getY() + Constants.HITBOX);
