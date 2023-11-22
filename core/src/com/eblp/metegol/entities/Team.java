@@ -78,7 +78,7 @@ public class Team {
         		if (p.getType() != StickType.FWD) {
         			// Dirije la pelota en diagonal hacia arriba o hacia abajo aleatoriamente
         			float dir = (float)Math.round(Math.random());
-        			ball.applyImpulse(teamType == TeamType.HOME ? 1 : -1, dir == 0 ? 1 : -1);
+        			ball.applyImpulse(teamType == TeamType.HOME ? 2 : -2, dir == 0 ? 2 : -2);
         		} else {
         			ball.goToGoal(teamType == TeamType.HOME ? TeamType.VISITOR : TeamType.HOME);
         		}

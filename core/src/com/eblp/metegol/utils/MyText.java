@@ -62,6 +62,11 @@ public class MyText {
 		this.text = text;
 	}
 	
+	public void setOpacity(float alpha) {
+		Color color = font.getColor();
+		font.setColor(color.r, color.g, color.b, alpha);
+	}
+	
 	public void draw() {
 		font.draw(MyRenderer.batch, text, x, y);
 	}

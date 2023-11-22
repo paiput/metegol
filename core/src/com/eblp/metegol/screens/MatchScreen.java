@@ -24,7 +24,8 @@ public class MatchScreen implements Screen {
 	private Team hTeam, vTeam;
 	private Ball ball;
 	
-	private float goalAnimation = 0;
+	private float goalAlertOpacity = 0;
+	private boolean showGoalAlert = false;
 
 	public MatchScreen(Metegol game) {
 		this.game = game;
@@ -91,18 +92,23 @@ public class MatchScreen implements Screen {
         vTeam.drawScore();
         
         // Gestiona rebote de pelota en los bordes y deteccion de gol
-        if (ball.isGoal() && goalAnimation < 1) {
-        	goalAnimation += 0.01f;
+        if (showGoalAlert && goalAlertOpacity < 1) {
+        	goalAlertOpacity += 0.01f;
+        	goalAlert.setOpacity(goalAlertOpacity);
         	goalAlert.draw();
         	MyRenderer.batch.end();
-        	ball.putOnCenter();
         	return;
         }
-        ball.handleCollisions();        	
+        
+        ball.handleCollisions(); 
+               	
         if (ball.isGoal()) {
         	int side = ball.getGoalSide();
         	if (side == -1) vTeam.scoreGoal();
         	else hTeam.scoreGoal();
+        	ball.placeOnCenter();
+        	showGoalAlert = true;
+        	goalAlertOpacity = 0;
         }
         
         // Habilita movimiento de palos
