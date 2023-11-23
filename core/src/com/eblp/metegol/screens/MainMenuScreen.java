@@ -5,55 +5,53 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.eblp.metegol.Metegol;
 import com.eblp.metegol.components.MyTextButton;
+import com.eblp.metegol.utils.Config;
+import com.eblp.metegol.utils.MyFont;
 import com.eblp.metegol.utils.MyRenderer;
 
 public class MainMenuScreen implements Screen {
 	private Metegol game;
 	private Camera camera;
-	// Skin de los elementos de ui
 	private Table table;
-	private Skin skin;
 	private Stage stage;
-	
+
 	public MainMenuScreen(Metegol game) {
 		this.game = game;
 		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		camera.position.set(0, 0, 0);
+		camera.position.set(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, 0);
 		camera.update();
-		// Grafo de escena donde estará el menú
-		stage = new Stage(new ExtendViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera));
 	}
-	
+
 	@Override
 	public void show() {
-		System.out.println("mostrando pantalla MAIN MENU");
-		// Tabla para los elementos del menú
-		table = new Table();
-		// La tabla ocupa toda la pantalla
-		//table.setFillParent(true);
-		table.setWidth(200);
-		table.setHeight(200);
-		stage.addActor(table);
-		
-		// Etiqueta de texto
-		Label label = new Label("Bienvenido a Pixelgol", getSkin());
-		table.addActor(label);
-		
+//		stage = new Stage(new ExtendViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera));
+//		stage = new Stage(new ExtendViewport(1920, 1080));
+		stage = new Stage();
+//		stage.getViewport().apply();
+
+		// Imagen de fondo
+		Image bg = new Image(new TextureRegionDrawable(new Texture("backgrounds/main-menu.jpeg")));
+		bg.setFillParent(true);
+		stage.addActor(bg);
+
+		// Texto bienvenida
+		LabelStyle labelStyle = new LabelStyle(new MyFont(Config.FONT, 64).getFont(), Color.BLACK);
+		Label label = new Label("Bienvenido a Pixelgol", labelStyle);
+
 		// Botón jugar
-		TextButton buttonPlay = new TextButton("Nuevo partido", getSkin());
-		buttonPlay.setPosition(label.getOriginX(), label.getOriginY() - 50);
-		buttonPlay.setWidth(200);
-		buttonPlay.setHeight(40);
+		MyTextButton buttonPlay = new MyTextButton("Iniciar");
 		buttonPlay.addListener(new InputListener() {
 			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
 				System.out.println("click en nuevo partido");
@@ -62,14 +60,9 @@ public class MainMenuScreen implements Screen {
 				return false;
 			}
 		});
-		table.addActor(buttonPlay);
-		
+
 		// Botón salir
-		final TextButton buttonExit = new TextButton("Salir", getSkin());
-		buttonExit.setPosition(label.getOriginX(), label.getOriginY() - 100);
-		buttonExit.setWidth(200);
-		buttonExit.setHeight(40);
-		// buttonExit.getLabel().setFontScale(4); para agrandar el texto
+		MyTextButton buttonExit = new MyTextButton("Salir");
 		buttonExit.addListener(new InputListener() {
 			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
 				System.out.println("click en salir");
@@ -78,24 +71,35 @@ public class MainMenuScreen implements Screen {
 				return false;
 			}
 		});
-		table.addActor(buttonExit);
+
+		// Tabla para los elementos del menú
+		table = new Table();
+		table.setFillParent(true);
+
+		table.add(label);
+		table.row();
+		table.add(buttonPlay.getButton());
+		table.row();
+		table.add(buttonExit.getButton());
+
+		table.debugAll();
+
+		stage.addActor(table);
 		
+		Gdx.input.setInputProcessor(stage);
+
 		System.out.println("Graphics w: " + Gdx.graphics.getWidth());
-		System.out.println("table w: " + table.getWidth());
+		System.out.println("table w: " + table.getWidth() + " table h: " + table.getHeight());
 	}
 
 	@Override
 	public void render(float delta) {
 		MyRenderer.cleanScreen(0, 0, 0);
-		MyRenderer.batch.begin();
-		// Usa la cámara del viewport, ya que es constante y ocupa toda la pantalla en todo momento
+
 		stage.getViewport().apply();
-		stage.act();
 		stage.draw();
-		table.setPosition(Gdx.graphics.getWidth()/2 - table.getWidth()/2, Gdx.graphics.getHeight() / 2);
-		Gdx.input.setInputProcessor(stage);
-		MyRenderer.batch.end();
-	}	
+		stage.act(delta);
+	}
 
 	@Override
 	public void resize(int width, int height) {
@@ -105,32 +109,23 @@ public class MainMenuScreen implements Screen {
 	@Override
 	public void pause() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void resume() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void hide() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
 		stage.dispose();
 	}
-	
-	protected Skin getSkin() {
-		if (skin == null) {
-			skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
-		}
-		return skin;
-	}
-
 }

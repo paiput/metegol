@@ -2,14 +2,12 @@ package com.eblp.metegol.entities;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.eblp.metegol.utils.Constants;
 import com.eblp.metegol.utils.MyImage;
-import com.eblp.metegol.utils.MyRenderer;
 import com.eblp.metegol.utils.MyText;
-import com.eblp.metegol.utils.Resources;
+import com.eblp.metegol.utils.Config;
 
 import enums.StickType;
 import enums.TeamType;
@@ -21,6 +19,7 @@ public class Team {
 	private int score = 0;
 	
 	private MyImage image;
+	private Sound kickSound, goalSound;
 	
 	// Grupos de jugadores por posición
 	private PlayersStick gkStick;
@@ -36,13 +35,16 @@ public class Team {
 		image.setSize(64, 64);
 		image.setPosition(teamType == TeamType.HOME ? Gdx.graphics.getWidth()/2 - Gdx.graphics.getWidth()*0.75f/2 : Gdx.graphics.getWidth()/2 + Gdx.graphics.getWidth()*0.75f/2 - image.getWidth(), Gdx.graphics.getHeight()/2 + Gdx.graphics.getHeight()*0.75f/2);
 		
-		scoreText = new MyText(Integer.toString(score), Resources.FONT, 64, Color.WHITE);
+		scoreText = new MyText(Integer.toString(score), Config.FONT, 64, Color.WHITE);
 		scoreText.setPosition(teamType == TeamType.HOME ? Gdx.graphics.getWidth()/2 - Gdx.graphics.getWidth()*0.75f/2 + image.getWidth(): Gdx.graphics.getWidth()/2 + Gdx.graphics.getWidth()*0.75f/2 - scoreText.getWidth() - image.getWidth(), Gdx.graphics.getHeight()/2 + Gdx.graphics.getHeight()*0.75f/2 + scoreText.getHeight() + 15);
+	
+		kickSound = Gdx.audio.newSound(Gdx.files.internal("audio/ball-kicked.wav"));
+		goalSound = Gdx.audio.newSound(Gdx.files.internal("audio/crowd-shortened.wav"));
 	}
 	
 	public void setLineUp(float pitchW, float pitchH) {
-		float y = Resources.SCREEN_H/2 - pitchH/2;
-		float xi = Resources.SCREEN_W/2 - pitchW/2; // toma como referencia inicial el borde izquierdo de la cancha
+		float y = Config.SCREEN_H/2 - pitchH/2;
+		float xi = Config.SCREEN_W/2 - pitchW/2; // toma como referencia inicial el borde izquierdo de la cancha
 		
 		System.out.println("Pitch Height: " + pitchH);
 		
@@ -69,16 +71,19 @@ public class Team {
 		fwdStick.init();
 	}
 	
-	public void detectCollision(Ball ball) {
+	public void detectCollision(Ball ball) {		
+		int i = 0;
 		for (Player p : getAllPlayers()) {
         	boolean contactX = (ball.getX() >= p.getX() - Constants.HITBOX) && (ball.getX() <= p.getX() + Constants.HITBOX);
         	boolean contactY = (ball.getY() >= p.getY() - Constants.HITBOX) && (ball.getY() <= p.getY() + Constants.HITBOX);
         	if (contactX && contactY) {
         		p.kick(); // Animacion de patear
+        		System.out.println("Patea");
+//        		kickSound.play();
         		if (p.getType() != StickType.FWD) {
         			// Dirije la pelota en diagonal hacia arriba o hacia abajo aleatoriamente
         			float dir = (float)Math.round(Math.random());
-        			ball.applyImpulse(teamType == TeamType.HOME ? 2 : -2, dir == 0 ? 2 : -2);
+        			ball.applyImpulse(teamType == TeamType.HOME ? 3 : -3, dir == 0 ? 3 : -3);
         		} else {
         			ball.goToGoal(teamType == TeamType.HOME ? TeamType.VISITOR : TeamType.HOME);
         		}
@@ -87,9 +92,18 @@ public class Team {
 	}
 	
 	public void scoreGoal() {
+		goalSound.play();
 		System.out.println("Goool de " + name);
 		score += 1;
 		scoreText.setText(Integer.toString(score));
+	}
+	
+	public int getScore() {
+		return score;
+	}
+	
+	public String getName() {
+		return name;
 	}
 	
 	public Player[] getAllPlayers() {
@@ -122,5 +136,7 @@ public class Team {
 		midStick.dispose();
 		fwdStick.dispose();
 		image.dispose();
+		kickSound.dispose();
+		goalSound.dispose();
 	}
 }

@@ -3,7 +3,7 @@ package com.eblp.metegol.entities;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.eblp.metegol.utils.MyRenderer;
-import com.eblp.metegol.utils.Resources;
+import com.eblp.metegol.utils.Config;
 
 import enums.TeamType;
 
@@ -14,10 +14,11 @@ public class Ball {
 	private Texture texture;
 	private Sprite sprite;
 	private int w, h;
-	private float dirX = 1, dirY = 1;
+	private float dirX = 2, dirY = 0;
 
-	private final float goalTop = Resources.SCREEN_H / 2 + 20;
-	private final float goalBottom = Resources.SCREEN_H / 2 - 20;
+	private final float goalTop = Config.SCREEN_H / 2 + 60;
+	private final float goalBottom = Config.SCREEN_H / 2 - 60;
+	private final float padding = 35;
 
 	public Ball(float x, float y, int w, int h) {
 		texture = new Texture("ball.png");
@@ -30,10 +31,10 @@ public class Ball {
 	}
 
 	public void handleCollisions() {
-		boolean leftBorder = sprite.getX() <= Resources.SCREEN_W / 2 - Resources.SCREEN_W * 0.75f / 2;
-		boolean rightBorder = sprite.getX() >= Resources.SCREEN_W / 2 + Resources.SCREEN_W * 0.75f / 2 - w;
-		boolean topBorder = sprite.getY() >= Resources.SCREEN_H / 2 + Resources.SCREEN_H * 0.75f / 2 - h;
-		boolean bottomBorder = sprite.getY() <= Resources.SCREEN_H / 2 - Resources.SCREEN_H * 0.75f / 2;
+		boolean leftBorder = sprite.getX() <= Config.SCREEN_W / 2 - Config.SCREEN_W * 0.75f / 2 + padding;
+		boolean rightBorder = sprite.getX() >= Config.SCREEN_W / 2 + Config.SCREEN_W * 0.75f / 2 - w - padding;
+		boolean topBorder = sprite.getY() >= Config.SCREEN_H / 2 + Config.SCREEN_H * 0.75f / 2 - h - padding;
+		boolean bottomBorder = sprite.getY() <= Config.SCREEN_H / 2 - Config.SCREEN_H * 0.75f / 2 + padding;
 
 		// Rebota al colisionar con los bordes en x
 		if (rightBorder || leftBorder)
@@ -48,13 +49,13 @@ public class Ball {
 	}
 
 	public float getDistanceFromGoalX(TeamType team) {
-		float pitch = Resources.SCREEN_W * 0.75f / 2;
+		float pitch = Config.SCREEN_W * 0.75f / 2;
 		float border = team == TeamType.VISITOR ? pitch : -pitch;
-		return Resources.SCREEN_W / 2 + border - sprite.getX();
+		return Config.SCREEN_W / 2 + border - sprite.getX();
 	}
 
 	public float getDistanceFromGoalY() {
-		return sprite.getY() - Resources.SCREEN_H / 2;
+		return sprite.getY() - Config.SCREEN_H / 2;
 	}
 
 	public void goToGoal(TeamType team) {
@@ -62,8 +63,8 @@ public class Ball {
 	}
 
 	public boolean isGoal() {
-		boolean leftBorder = sprite.getX() <= Resources.SCREEN_W / 2 - Resources.SCREEN_W * 0.75f / 2;
-		boolean rightBorder = sprite.getX() >= Resources.SCREEN_W / 2 + Resources.SCREEN_W * 0.75f / 2 - w;
+		boolean leftBorder = sprite.getX() <= Config.SCREEN_W / 2 - Config.SCREEN_W * 0.75f / 2 + padding;
+		boolean rightBorder = sprite.getX() >= Config.SCREEN_W / 2 + Config.SCREEN_W * 0.75f / 2 - w - padding;
 
 		goalSide = 0;
 
@@ -83,7 +84,7 @@ public class Ball {
 	}
 
 	public void placeOnCenter() {
-		sprite.setPosition(Resources.SCREEN_W / 2 - 8, Resources.SCREEN_H / 2 - 8);
+		sprite.setPosition(Config.SCREEN_W / 2 - 8, Config.SCREEN_H / 2 - 8);
 	}
 
 	public void applyImpulse(float x, float y) {
@@ -101,6 +102,10 @@ public class Ball {
 
 	public void draw() {
 		sprite.draw(MyRenderer.batch);
+	}
+	
+	public void dispose() {
+		texture.dispose();
 	}
 
 }

@@ -2,6 +2,7 @@ package com.eblp.metegol.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.eblp.metegol.Metegol;
@@ -10,7 +11,7 @@ import com.eblp.metegol.entities.Team;
 import com.eblp.metegol.utils.MyImage;
 import com.eblp.metegol.utils.MyRenderer;
 import com.eblp.metegol.utils.MyText;
-import com.eblp.metegol.utils.Resources;
+import com.eblp.metegol.utils.Config;
 
 import enums.TeamType;
 
@@ -20,6 +21,7 @@ public class MatchScreen implements Screen {
 	private MyImage pitch;
 	private MyImage hGoal, vGoal; // Arcos
 	private MyText goalAlert;
+	private Sound finalWhistle;
 	
 	private Team hTeam, vTeam;
 	private Ball ball;
@@ -30,9 +32,9 @@ public class MatchScreen implements Screen {
 	public MatchScreen(Metegol game) {
 		this.game = game;
 		
-		viewport = new FitViewport(Resources.SCREEN_W, Resources.SCREEN_H);
+		viewport = new FitViewport(Config.SCREEN_W, Config.SCREEN_H);
 		
-		System.out.println("Width: " + Resources.SCREEN_W + " Height: " + Resources.SCREEN_H);
+		System.out.println("Width: " + Config.SCREEN_W + " Height: " + Config.SCREEN_H);
 	}
 	
 	@Override
@@ -44,8 +46,8 @@ public class MatchScreen implements Screen {
 		viewport.apply();
 		
 		pitch = new MyImage("pitch-2.jpg");
-		pitch.setSize(Resources.SCREEN_W * 0.75f, Resources.SCREEN_H * 0.75f);
-		pitch.setPosition(vw/2 - pitch.getWidth()/2, Resources.SCREEN_H/2 - pitch.getHeight()/2);
+		pitch.setSize(Config.SCREEN_W * 0.75f, Config.SCREEN_H * 0.75f);
+		pitch.setPosition(vw/2 - pitch.getWidth()/2, Config.SCREEN_H/2 - pitch.getHeight()/2);
 		
 		// Arco local
 		hGoal = new MyImage("arco-inverso.png");
@@ -57,7 +59,7 @@ public class MatchScreen implements Screen {
 		vGoal.setSize(32, 160);
 		vGoal.setPosition(vw/2 + pitch.getWidth()/2 - vGoal.getWidth() - 4, vh/2 - hGoal.getHeight()/2);
 		
-		ball = new Ball(Resources.SCREEN_W/2-8, Resources.SCREEN_H/2-8, 16, 16);
+		ball = new Ball(Config.SCREEN_W/2-8, Config.SCREEN_H/2-8, 16, 16);
 		
 		// Equipo local
 		hTeam = new Team("Velez", "escudo-velez-pixel.png", TeamType.HOME);
@@ -67,14 +69,24 @@ public class MatchScreen implements Screen {
 		vTeam = new Team("Independiente", "escudo-independiente-pixel.png", TeamType.VISITOR);
 		vTeam.setLineUp(pitch.getWidth(), pitch.getHeight());	
 		
-		goalAlert = new MyText("Gooool", Resources.FONT, 128, Color.YELLOW);
+		goalAlert = new MyText("Gooool", Config.FONT, 128, Color.YELLOW);
 		goalAlert.setPosition(vw/2-goalAlert.getWidth()/2, vh/2+goalAlert.getHeight()/2);
+		
+		finalWhistle = Gdx.audio.newSound(Gdx.files.internal("audio/final-whistle.wav"));
 	}
 
 	@Override
 	public void render(float delta) {
 		// Limpia la pantalla
 		MyRenderer.cleanScreen(0, 0, 0);
+		
+		// Termina el partido
+        if (hTeam.getScore() == 2 || vTeam.getScore() == 2) {
+        	finalWhistle.play();
+        	String winner = hTeam.getScore() == 2 ? hTeam.getName() : vTeam.getName();
+        	game.setScreen(new GameOverScreen(game, "Ganooooo " + winner));
+        	return;
+        }
 		
 		MyRenderer.batch.begin();
 		
@@ -149,6 +161,8 @@ public class MatchScreen implements Screen {
 		pitch.dispose();
 		hTeam.dispose();
 		vTeam.dispose();
+		ball.dispose();
+		finalWhistle.dispose();
 	}
 
 }

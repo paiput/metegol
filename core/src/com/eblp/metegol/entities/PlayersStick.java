@@ -5,7 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.eblp.metegol.utils.MyRenderer;
-import com.eblp.metegol.utils.Resources;
+import com.eblp.metegol.utils.Config;
 
 import enums.StickType;
 import enums.TeamType;
@@ -44,8 +44,8 @@ public class PlayersStick {
 	
 	public void init() {
 		
-		float bottom = Resources.SCREEN_H/2 - h/2;
-		float top = Resources.SCREEN_H/2 + h/2;
+		float bottom = Config.SCREEN_H/2 - h/2;
+		float top = Config.SCREEN_H/2 + h/2;
 		
 		int pIndex = 0;
 		for (Player p : players) {
@@ -65,13 +65,14 @@ public class PlayersStick {
 			} 
 			
 			// Cambia la region cuando patea 
-			if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+			/*if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
 				sprite.setRegion(REGION_WIDTH, 0, REGION_WIDTH, REGION_HEIGHT);
 				p.kick();
 			} else {
 				sprite.setRegion(0, 0, REGION_WIDTH, REGION_HEIGHT);
 				p.stand();
-			}
+			}*/
+			p.stand();
 			
 			
 			pIndex++;
