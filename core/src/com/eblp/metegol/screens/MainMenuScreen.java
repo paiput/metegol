@@ -12,9 +12,9 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.eblp.metegol.Metegol;
 import com.eblp.metegol.components.MyTextButton;
 import com.eblp.metegol.utils.Config;
@@ -37,9 +37,9 @@ public class MainMenuScreen implements Screen {
 	@Override
 	public void show() {
 //		stage = new Stage(new ExtendViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera));
-//		stage = new Stage(new ExtendViewport(1920, 1080));
-		stage = new Stage();
-//		stage.getViewport().apply();
+		stage = new Stage(new ExtendViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
+//		stage = new Stage();
+		stage.getViewport().apply();
 
 		// Imagen de fondo
 		Image bg = new Image(new TextureRegionDrawable(new Texture("backgrounds/main-menu.jpeg")));
@@ -103,7 +103,7 @@ public class MainMenuScreen implements Screen {
 
 	@Override
 	public void resize(int width, int height) {
-		stage.getViewport().update(width, height, false);
+		stage.getViewport().update(width, height, true);
 	}
 
 	@Override

@@ -3,65 +3,115 @@ package com.eblp.metegol.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.eblp.metegol.Metegol;
+import com.eblp.metegol.components.MyTextButton;
+import com.eblp.metegol.utils.Config;
+import com.eblp.metegol.utils.MyFont;
 import com.eblp.metegol.utils.MyRenderer;
 import com.eblp.metegol.utils.MyText;
 
 public class GameOverScreen implements Screen {
 	private Metegol game;
-	
-	private MyText message;
+
+	private Stage stage;
+	private Table table;
+	private String message;
 
 	public GameOverScreen(Metegol game) {
 		this.game = game;
 	}
-	
-	public GameOverScreen(Metegol game, String text) {
+
+	public GameOverScreen(Metegol game, String message) {
 		this.game = game;
-		message = new MyText(text, "fonts/VT323-Regular.ttf", 64, Color.YELLOW);
-		message.setPosition(Gdx.graphics.getWidth()/2 - message.getWidth()/2, Gdx.graphics.getHeight()/2 + message.getHeight()/2);
+		this.message = message;
 	}
-	
+
 	@Override
 	public void show() {
-		System.out.println("mostrando pantalla GAME OVER");
+		stage = new Stage();
+
+		// Texto bienvenida
+		LabelStyle labelStyle = new LabelStyle(new MyFont(Config.FONT, 64).getFont(), Color.YELLOW);
+		Label label = new Label(message, labelStyle);
+
+		// Botón jugar
+		MyTextButton newGame = new MyTextButton("Juego nuevo");
+		newGame.addListener(new InputListener() {
+			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+				game.setScreen(new MatchScreen(game));
+				dispose();
+				return false;
+			}
+		});
+
+		// Botón salir
+		MyTextButton buttonExit = new MyTextButton("Volver");
+		buttonExit.addListener(new InputListener() {
+			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+				game.setScreen(new GameSettingsScreen(game));
+				dispose();
+				return false;
+			}
+		});
+
+		// Tabla para los elementos del menú
+		table = new Table();
+		table.setFillParent(true);
+
+		table.add(label);
+		table.row();
+		table.add(newGame.getButton());
+		table.row();
+		table.add(buttonExit.getButton());
+
+		table.debugAll();
+
+		stage.addActor(table);
+
+		Gdx.input.setInputProcessor(stage);
 	}
 
 	@Override
 	public void render(float delta) {
 		MyRenderer.cleanScreen(0, 0, 0);
-		MyRenderer.batch.begin();
-		message.draw();
-		MyRenderer.batch.end();
+		stage.getViewport().apply();
+		stage.draw();
+		stage.act(delta);
 	}
 
 	@Override
 	public void resize(int width, int height) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void pause() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void resume() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void hide() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void dispose() {
-		message.dispose();
+		stage.dispose();
 	}
 
 }
