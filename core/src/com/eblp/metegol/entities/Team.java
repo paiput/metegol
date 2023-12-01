@@ -46,17 +46,17 @@ public class Team {
 		float y = Config.SCREEN_H/2 - pitchH/2;
 		float xi = Config.SCREEN_W/2 - pitchW/2; // toma como referencia inicial el borde izquierdo de la cancha
 		
-		System.out.println("Pitch Height: " + pitchH);
+//		System.out.println("Pitch Height: " + pitchH);
 		
 		if (teamType == TeamType.HOME) {
-			System.out.println("Somos home");
+//			System.out.println("Somos home");
 			gkStick = new PlayersStick(TeamType.HOME, StickType.GK, 1, xi + pitchW*0.05f, y, 4, pitchH, Input.Keys.UP, Input.Keys.DOWN);
 			defStick = new PlayersStick(TeamType.HOME, StickType.DEF, 3, xi + pitchW*0.15f, y, 4, pitchH, Input.Keys.UP, Input.Keys.DOWN);
 			midStick = new PlayersStick(TeamType.HOME, StickType.MID, 4, xi + pitchW*0.4f, y, 4, pitchH, Input.Keys.UP, Input.Keys.DOWN);
 			fwdStick = new PlayersStick(TeamType.HOME, StickType.FWD, 3, xi + pitchW*0.7f, y, 4, pitchH, Input.Keys.UP, Input.Keys.DOWN);
 		} else {			
 			// Invierte la posición de los jugadores
-			System.out.println("Somos visitor");
+//			System.out.println("Somos visitor");
 			gkStick = new PlayersStick(TeamType.VISITOR, StickType.GK, 1, xi + pitchW*0.95f, y, 4, pitchH, Input.Keys.W, Input.Keys.S);
 			defStick = new PlayersStick(TeamType.VISITOR, StickType.DEF, 3, xi + pitchW*0.85f, y, 4, pitchH, Input.Keys.W, Input.Keys.S);
 			midStick = new PlayersStick(TeamType.VISITOR, StickType.MID, 4, xi + pitchW*0.6f, y, 4, pitchH, Input.Keys.W, Input.Keys.S);
@@ -78,7 +78,7 @@ public class Team {
         	boolean contactY = (ball.getY() >= p.getY() - Constants.HITBOX) && (ball.getY() <= p.getY() + Constants.HITBOX);
         	if (contactX && contactY) {
         		p.kick(); // Animacion de patear
-        		System.out.println("Patea");
+//        		System.out.println("Patea");
 //        		kickSound.play();
         		if (p.getType() != StickType.FWD) {
         			// Dirije la pelota en diagonal hacia arriba o hacia abajo aleatoriamente

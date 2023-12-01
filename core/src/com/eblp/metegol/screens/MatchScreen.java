@@ -8,10 +8,12 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.eblp.metegol.Metegol;
 import com.eblp.metegol.entities.Ball;
 import com.eblp.metegol.entities.Team;
+import com.eblp.metegol.network.ClientThread;
+import com.eblp.metegol.utils.Config;
+import com.eblp.metegol.utils.Global;
 import com.eblp.metegol.utils.MyImage;
 import com.eblp.metegol.utils.MyRenderer;
 import com.eblp.metegol.utils.MyText;
-import com.eblp.metegol.utils.Config;
 
 import enums.TeamType;
 
@@ -20,8 +22,9 @@ public class MatchScreen implements Screen {
 	private FitViewport viewport;
 	private MyImage pitch;
 	private MyImage hGoal, vGoal; // Arcos
-	private MyText goalAlert;
+	private MyText goalAlert, waiting;
 	private Sound finalWhistle;
+	private ClientThread ct;
 	
 	private Team hTeam, vTeam;
 	private Ball ball;
@@ -33,6 +36,8 @@ public class MatchScreen implements Screen {
 		this.game = game;
 		
 		viewport = new FitViewport(Config.SCREEN_W, Config.SCREEN_H);
+		
+		ct = new ClientThread();
 		
 		System.out.println("Width: " + Config.SCREEN_W + " Height: " + Config.SCREEN_H);
 	}
@@ -72,13 +77,27 @@ public class MatchScreen implements Screen {
 		goalAlert = new MyText("Gooool", Config.FONT, 128, Color.YELLOW);
 		goalAlert.setPosition(vw/2-goalAlert.getWidth()/2, vh/2+goalAlert.getHeight()/2);
 		
+		waiting = new MyText("Esperando oponente", Config.FONT, 64, Color.WHITE);
+		waiting.setPosition(vw/2-waiting.getWidth()/2, vh/2-waiting.getHeight()/2);
+		
 		finalWhistle = Gdx.audio.newSound(Gdx.files.internal("audio/final-whistle.wav"));
+		
+		// Se inicia el hilo del cliente
+		ct.start();
+		System.out.println("Client thread iniciado");
 	}
 
 	@Override
 	public void render(float delta) {
 		// Limpia la pantalla
 		MyRenderer.cleanScreen(0, 0, 0);
+		
+		if (!Global.start) {
+			MyRenderer.batch.begin();
+			waiting.draw();
+			MyRenderer.batch.end();
+			return;
+		}
 		
 		// Termina el partido
         if (hTeam.getScore() == 2 || vTeam.getScore() == 2) {

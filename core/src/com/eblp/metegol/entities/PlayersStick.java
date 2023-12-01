@@ -35,7 +35,7 @@ public class PlayersStick {
 		players = new Player[playersCount];
 		int playerSize = 32;
 		for (int i=0; i<playersCount; i++) {
-			System.out.println("Player " + i + " y axis: " + (y+i*playerSize+i*h*0.15f));
+//			System.out.println("Player " + i + " y axis: " + (y+i*playerSize+i*h*0.15f));
 			players[i] = new Player(teamType, st, x-playerSize/2+w/2, y+i*playerSize+i*h*0.15f, playerSize, playerSize);
 		}
 		sprite.setPosition(x, y);
