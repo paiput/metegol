@@ -4,10 +4,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
+import com.eblp.metegol.network.ClientThread;
+import com.eblp.metegol.utils.Config;
 import com.eblp.metegol.utils.Constants;
 import com.eblp.metegol.utils.MyImage;
 import com.eblp.metegol.utils.MyText;
-import com.eblp.metegol.utils.Config;
 
 import enums.StickType;
 import enums.TeamType;
@@ -17,6 +18,7 @@ public class Team {
 	private TeamType teamType;
 	private MyText scoreText;
 	private int score = 0;
+	private ClientThread ct;
 	
 	private MyImage image;
 	private Sound kickSound, goalSound;
@@ -40,6 +42,10 @@ public class Team {
 	
 		kickSound = Gdx.audio.newSound(Gdx.files.internal("audio/ball-kicked.wav"));
 		goalSound = Gdx.audio.newSound(Gdx.files.internal("audio/crowd-shortened.wav"));
+	}
+	
+	public void setThread(ClientThread ct) {
+		 this.ct = ct;
 	}
 	
 	public void setLineUp(float pitchW, float pitchH) {

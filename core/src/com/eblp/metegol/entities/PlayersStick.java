@@ -5,10 +5,13 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.eblp.metegol.utils.MyRenderer;
+import com.eblp.metegol.network.Client;
+import com.eblp.metegol.network.ClientThread;
 import com.eblp.metegol.utils.Config;
 
 import enums.StickType;
 import enums.TeamType;
+import gameplay.Data;
 
 public class PlayersStick {
 	private final int REGION_WIDTH = 16;
@@ -16,10 +19,13 @@ public class PlayersStick {
 	private int keyUp, keyDown;
 	private Player[] players;
 	private Texture texture;
+	private TeamType team;
 	private StickType type;
 	private Sprite sprite;
 	private float x, y;
 	private float w, h;
+	
+	private final float vel = 5;
 
 	public PlayersStick(TeamType teamType, StickType st, int playersCount, float x, float y, float w, float h, int keyUp, int keyDown) {
 		this.x = x;
@@ -29,6 +35,7 @@ public class PlayersStick {
 		this.keyUp = keyUp;
 		this.keyDown = keyDown;
 		this.type = st;
+		this.team = teamType;
 		texture = new Texture("stick-spritesheet.png");
 		sprite = new Sprite(texture, 0, 0, REGION_WIDTH, REGION_HEIGHT);
 		
@@ -42,38 +49,23 @@ public class PlayersStick {
 		sprite.setSize(w, h);
 	}
 	
+//	public void setThread(ClientThread ct) {
+//		this.ct = ct;
+//	}
+	
 	public void init() {
 		
 		float bottom = Config.SCREEN_H/2 - h/2;
 		float top = Config.SCREEN_H/2 + h/2;
 		
 		int pIndex = 0;
-		for (Player p : players) {
-			float vel = 5;
+		for (int i = 0; i < players.length; i++) {
+			Player p = players[i];
 			
-			// Movimiento vertical del palo
-			if (Gdx.input.isKeyPressed(keyDown)) {
-				// Bloquea los jugadores al llegar al borde de abajo
-				if (p.getY() > bottom + p.getH()*pIndex + (pIndex*h*0.15f)) {
-					p.moveY(-vel);
-				}
-			} else if (Gdx.input.isKeyPressed(keyUp)) {
-				// Bloquea los jugadores al llegar al borde de arriba
-				if (p.getY() < top - (p.getH()*(players.length-pIndex) + (players.length-pIndex-1)*h*0.15f)) {
-					p.moveY(vel);
-				}
-			} 
-			
-			// Cambia la region cuando patea 
-			/*if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
-				sprite.setRegion(REGION_WIDTH, 0, REGION_WIDTH, REGION_HEIGHT);
-				p.kick();
-			} else {
-				sprite.setRegion(0, 0, REGION_WIDTH, REGION_HEIGHT);
-				p.stand();
-			}*/
 			p.stand();
 			
+			// Actualiza las posiciones de los jugadores con los datos del servidor
+			updatePlayersPositions(p, i);
 			
 			pIndex++;
 		}
@@ -87,6 +79,20 @@ public class PlayersStick {
 				gk.setY(bottom + h*0.4f - gk.getH()/2);
 			}
 		}		
+	}
+	
+	private void updatePlayersPositions(Player p, int index) {
+		if (team == TeamType.HOME) {
+			if (type == StickType.GK) p.setY(Data.yGk1[index]);
+			else if (type == StickType.DEF) p.setY(Data.yDef1[index]);
+			else if (type == StickType.MID) p.setY(Data.yMid1[index]);
+			else if (type == StickType.FWD) p.setY(Data.yFwd1[index]);
+		} else {
+			if (type == StickType.GK) p.setY(Data.yGk2[index]);
+			else if (type == StickType.DEF) p.setY(Data.yDef2[index]);
+			else if (type == StickType.MID) p.setY(Data.yMid2[index]);
+			else if (type == StickType.FWD) p.setY(Data.yFwd2[index]);		
+		}
 	}
 	
 	public Player[] getPlayers() {
