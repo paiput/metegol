@@ -50,7 +50,7 @@ public class PlayersStick {
 		sprite.setSize(w, h);
 	}
 	
-	public void init() {
+	public void update() {
 		
 		float bottom = Config.SCREEN_H/2 - h/2;
 		float top = Config.SCREEN_H/2 + h/2;

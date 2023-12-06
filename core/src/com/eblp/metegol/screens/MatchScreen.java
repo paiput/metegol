@@ -16,6 +16,7 @@ import com.eblp.metegol.utils.MyRenderer;
 import com.eblp.metegol.utils.MyText;
 
 import enums.TeamType;
+import gameplay.Data;
 import io.KeyListener;
 
 public class MatchScreen implements Screen {
@@ -66,7 +67,8 @@ public class MatchScreen implements Screen {
 		vGoal.setSize(32, 160);
 		vGoal.setPosition(vw / 2 + pitch.getWidth() / 2 - vGoal.getWidth() - 4, vh / 2 - hGoal.getHeight() / 2);
 
-		ball = new Ball(Config.SCREEN_W / 2 - 8, Config.SCREEN_H / 2 - 8, 16, 16);
+		ball = new Ball(Data.xBall, Data.yBall, 16, 16);
+		//ball = new Ball(Config.SCREEN_W / 2 - 8, Config.SCREEN_H / 2 - 8, 16, 16);
 
 		// Equipo local
 		hTeam = new Team("Velez", "escudo-velez-pixel.png", TeamType.HOME);
@@ -138,27 +140,22 @@ public class MatchScreen implements Screen {
 			MyRenderer.batch.end();
 			return;
 		}
+		
+		ball.update();
 
-//		ball.handleCollisions();
-
-		if (ball.isGoal()) {
-			int side = ball.getGoalSide();
-			if (side == -1)
+		// Si es gol detecta en que arco y asigna puntaje correspondiente
+		if (Data.ballIsGoal) {
+			if (Data.ballGoalSide == -1)
 				vTeam.scoreGoal();
 			else
 				hTeam.scoreGoal();
-			ball.placeOnCenter();
 			showGoalAlert = true;
 			goalAlertOpacity = 0;
 		}
 
 		// Habilita movimiento de palos
-		hTeam.init();
-		vTeam.init();
-
-		// Gestiona interseccion entre jugador y pelota
-		hTeam.detectCollision(ball);
-		vTeam.detectCollision(ball);
+		hTeam.update();
+		vTeam.update();
 
 		MyRenderer.batch.end();
 	}

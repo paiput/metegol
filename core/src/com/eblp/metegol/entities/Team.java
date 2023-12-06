@@ -70,31 +70,11 @@ public class Team {
 		}
 	}
 	
-	public void init() {
-		gkStick.init();
-		defStick.init();
-		midStick.init();
-		fwdStick.init();
-	}
-	
-	public void detectCollision(Ball ball) {		
-		int i = 0;
-		for (Player p : getAllPlayers()) {
-        	boolean contactX = (ball.getX() >= p.getX() - Constants.HITBOX) && (ball.getX() <= p.getX() + Constants.HITBOX);
-        	boolean contactY = (ball.getY() >= p.getY() - Constants.HITBOX) && (ball.getY() <= p.getY() + Constants.HITBOX);
-        	if (contactX && contactY) {
-        		p.kick(); // Animacion de patear
-//        		System.out.println("Patea");
-//        		kickSound.play();
-        		if (p.getType() != StickType.FWD) {
-        			// Dirije la pelota en diagonal hacia arriba o hacia abajo aleatoriamente
-        			float dir = (float)Math.round(Math.random());
-        			ball.applyImpulse(teamType == TeamType.HOME ? 3 : -3, dir == 0 ? 3 : -3);
-        		} else {
-        			ball.goToGoal(teamType == TeamType.HOME ? TeamType.VISITOR : TeamType.HOME);
-        		}
-        	}
-        }
+	public void update() {
+		gkStick.update();
+		defStick.update();
+		midStick.update();
+		fwdStick.update();
 	}
 	
 	public void scoreGoal() {

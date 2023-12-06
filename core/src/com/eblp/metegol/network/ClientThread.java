@@ -102,6 +102,17 @@ public class ClientThread extends Thread {
 						for (int i=0; i<positions.length; i++) 
 							Data.yFwd2[i] = Float.parseFloat(positions[i]);
 				}
+			} else if (paramMsg[0].equals("ball")) {
+				
+				if (paramMsg[1].equals("position")) {
+					
+					String[] position = paramMsg[2].split(",");
+					
+					Data.xBall = Float.parseFloat(position[0]);
+					Data.yBall = Float.parseFloat(position[1]);
+					
+				}
+				
 			}
 		}
 	}
