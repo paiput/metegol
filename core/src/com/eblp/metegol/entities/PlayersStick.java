@@ -44,14 +44,11 @@ public class PlayersStick {
 		for (int i=0; i<playersCount; i++) {
 //			System.out.println("Player " + i + " y axis: " + (y+i*playerSize+i*h*0.15f));
 			players[i] = new Player(teamType, st, x-playerSize/2+w/2, y+i*playerSize+i*h*0.15f, playerSize, playerSize);
+			updatePlayersInitialPositions(players[i], i);
 		}
 		sprite.setPosition(x, y);
 		sprite.setSize(w, h);
 	}
-	
-//	public void setThread(ClientThread ct) {
-//		this.ct = ct;
-//	}
 	
 	public void init() {
 		
@@ -92,6 +89,20 @@ public class PlayersStick {
 			else if (type == StickType.DEF) p.setY(Data.yDef2[index]);
 			else if (type == StickType.MID) p.setY(Data.yMid2[index]);
 			else if (type == StickType.FWD) p.setY(Data.yFwd2[index]);		
+		}
+	}
+	
+	private void updatePlayersInitialPositions(Player p, int index) {
+		if (team == TeamType.HOME) {
+			if (type == StickType.GK) Data.yGk1[index] = p.getY();
+			else if (type == StickType.DEF) Data.yDef1[index] = p.getY();
+			else if (type == StickType.MID) Data.yMid1[index] = p.getY();
+			else if (type == StickType.FWD) Data.yFwd1[index] = p.getY();
+		} else {
+			if (type == StickType.GK) Data.yGk2[index] = p.getY();
+			else if (type == StickType.DEF) Data.yDef2[index] = p.getY();
+			else if (type == StickType.MID) Data.yMid2[index] = p.getY();
+			else if (type == StickType.FWD) Data.yFwd2[index] = p.getY();
 		}
 	}
 	
