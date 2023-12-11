@@ -14,7 +14,6 @@ import com.eblp.metegol.components.MyTextButton;
 import com.eblp.metegol.utils.Config;
 import com.eblp.metegol.utils.MyFont;
 import com.eblp.metegol.utils.MyRenderer;
-import com.eblp.metegol.utils.MyText;
 
 public class GameOverScreen implements Screen {
 	private Metegol game;
@@ -34,6 +33,7 @@ public class GameOverScreen implements Screen {
 
 	@Override
 	public void show() {
+		
 		stage = new Stage();
 
 		// Texto bienvenida
@@ -41,20 +41,20 @@ public class GameOverScreen implements Screen {
 		Label label = new Label(message, labelStyle);
 
 		// Botón jugar
-		MyTextButton newGame = new MyTextButton("Juego nuevo");
+		MyTextButton newGame = new MyTextButton("Menú");
 		newGame.addListener(new InputListener() {
 			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-				game.setScreen(new MatchScreen(game));
+				game.setScreen(new GameSettingsScreen(game));
 				dispose();
 				return false;
 			}
 		});
 
 		// Botón salir
-		MyTextButton buttonExit = new MyTextButton("Volver");
+		MyTextButton buttonExit = new MyTextButton("Salir");
 		buttonExit.addListener(new InputListener() {
 			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-				game.setScreen(new GameSettingsScreen(game));
+				System.exit(0);
 				dispose();
 				return false;
 			}

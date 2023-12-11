@@ -4,21 +4,19 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
-import com.eblp.metegol.network.ClientThread;
 import com.eblp.metegol.utils.Config;
-import com.eblp.metegol.utils.Constants;
 import com.eblp.metegol.utils.MyImage;
 import com.eblp.metegol.utils.MyText;
 
 import enums.StickType;
 import enums.TeamType;
+import gameplay.Data;
 
 public class Team {
 	private String name;
 	private TeamType teamType;
 	private MyText scoreText;
-	private int score = 0;
-	private ClientThread ct;
+//	private int score = 0;
 	
 	private MyImage image;
 	private Sound kickSound, goalSound;
@@ -37,32 +35,24 @@ public class Team {
 		image.setSize(64, 64);
 		image.setPosition(teamType == TeamType.HOME ? Gdx.graphics.getWidth()/2 - Gdx.graphics.getWidth()*0.75f/2 : Gdx.graphics.getWidth()/2 + Gdx.graphics.getWidth()*0.75f/2 - image.getWidth(), Gdx.graphics.getHeight()/2 + Gdx.graphics.getHeight()*0.75f/2);
 		
-		scoreText = new MyText(Integer.toString(score), Config.FONT, 64, Color.WHITE);
+		scoreText = new MyText(Integer.toString(teamType == TeamType.HOME ? Data.score1 : Data.score2), Config.FONT, 64, Color.WHITE);
 		scoreText.setPosition(teamType == TeamType.HOME ? Gdx.graphics.getWidth()/2 - Gdx.graphics.getWidth()*0.75f/2 + image.getWidth(): Gdx.graphics.getWidth()/2 + Gdx.graphics.getWidth()*0.75f/2 - scoreText.getWidth() - image.getWidth(), Gdx.graphics.getHeight()/2 + Gdx.graphics.getHeight()*0.75f/2 + scoreText.getHeight() + 15);
 	
 		kickSound = Gdx.audio.newSound(Gdx.files.internal("audio/ball-kicked.wav"));
 		goalSound = Gdx.audio.newSound(Gdx.files.internal("audio/crowd-shortened.wav"));
 	}
 	
-	public void setThread(ClientThread ct) {
-		 this.ct = ct;
-	}
-	
 	public void setLineUp(float pitchW, float pitchH) {
 		float y = Config.SCREEN_H/2 - pitchH/2;
 		float xi = Config.SCREEN_W/2 - pitchW/2; // toma como referencia inicial el borde izquierdo de la cancha
-		
-//		System.out.println("Pitch Height: " + pitchH);
-		
+				
 		if (teamType == TeamType.HOME) {
-//			System.out.println("Somos home");
 			gkStick = new PlayersStick(TeamType.HOME, StickType.GK, 1, xi + pitchW*0.05f, y, 4, pitchH, Input.Keys.UP, Input.Keys.DOWN);
 			defStick = new PlayersStick(TeamType.HOME, StickType.DEF, 3, xi + pitchW*0.15f, y, 4, pitchH, Input.Keys.UP, Input.Keys.DOWN);
 			midStick = new PlayersStick(TeamType.HOME, StickType.MID, 4, xi + pitchW*0.4f, y, 4, pitchH, Input.Keys.UP, Input.Keys.DOWN);
 			fwdStick = new PlayersStick(TeamType.HOME, StickType.FWD, 3, xi + pitchW*0.7f, y, 4, pitchH, Input.Keys.UP, Input.Keys.DOWN);
 		} else {			
 			// Invierte la posición de los jugadores
-//			System.out.println("Somos visitor");
 			gkStick = new PlayersStick(TeamType.VISITOR, StickType.GK, 1, xi + pitchW*0.95f, y, 4, pitchH, Input.Keys.W, Input.Keys.S);
 			defStick = new PlayersStick(TeamType.VISITOR, StickType.DEF, 3, xi + pitchW*0.85f, y, 4, pitchH, Input.Keys.W, Input.Keys.S);
 			midStick = new PlayersStick(TeamType.VISITOR, StickType.MID, 4, xi + pitchW*0.6f, y, 4, pitchH, Input.Keys.W, Input.Keys.S);
@@ -75,17 +65,35 @@ public class Team {
 		defStick.update();
 		midStick.update();
 		fwdStick.update();
+		animateKick();
 	}
 	
-	public void scoreGoal() {
+	private void animateKick() {
+		if ((teamType == TeamType.HOME && Data.kickGk1) || (teamType == TeamType.VISITOR && Data.kickGk2)) {
+			gkStick.kick();
+			Data.kickGk1 = false;
+			Data.kickGk2 = false;
+		}
+		else if ((teamType == TeamType.HOME && Data.kickDef1) || (teamType == TeamType.VISITOR && Data.kickDef2)) {
+			defStick.kick();
+			Data.kickDef1 = false;
+			Data.kickDef2 = false;
+		}
+		else if ((teamType == TeamType.HOME && Data.kickMid1) || (teamType == TeamType.VISITOR && Data.kickMid2)) {
+			midStick.kick();
+			Data.kickMid1 = false;
+			Data.kickMid2 = false;
+		}
+		else if ((teamType == TeamType.HOME && Data.kickFwd1) || (teamType == TeamType.VISITOR && Data.kickFwd2)) {
+			fwdStick.kick();
+			Data.kickFwd1 = false;
+			Data.kickFwd2 = false;
+		}
+	}
+	
+	public void updateScore() {
 		goalSound.play();
-		System.out.println("Goool de " + name);
-		score += 1;
-		scoreText.setText(Integer.toString(score));
-	}
-	
-	public int getScore() {
-		return score;
+		scoreText.setText(Integer.toString(teamType == TeamType.HOME ? Data.score1 : Data.score2));
 	}
 	
 	public String getName() {

@@ -29,6 +29,7 @@ public class ClientThread extends Thread {
 		sendMessage("Conexion");
 	}
 
+	// Envia un mensaje al servidor
 	public static void sendMessage(String msg) {
 		byte[] data = msg.getBytes();
 		DatagramPacket dp = new DatagramPacket(data, data.length, serverIP, port);
@@ -56,22 +57,22 @@ public class ClientThread extends Thread {
 	// Procesa el mensaje enviado por el servidor y guarda la IP
 	private void processMessage(DatagramPacket dp) {
 		String msg = new String(dp.getData()).trim();
-		System.out.println("Mensaje Cliente: " + msg);
 		
 		String[] paramMsg = msg.split("_");
 		
 		if (paramMsg.length < 2) {
+			
 			if (msg.equals("OK")) {
 				serverIP = dp.getAddress();
 			} else if (msg.equals("Empieza")) {
 				Global.start = true;
-			}			
+			} 
+
 		} else {
 			
 			if (paramMsg[0].equals("update")) {
 				
 				if (paramMsg[1].equals("P1")) {
-					
 					// paramMsg[3] seria -> "y1,y2,y3,..."
 					String positions[] = paramMsg[3].split(",");
 					
@@ -102,6 +103,7 @@ public class ClientThread extends Thread {
 						for (int i=0; i<positions.length; i++) 
 							Data.yFwd2[i] = Float.parseFloat(positions[i]);
 				}
+				
 			} else if (paramMsg[0].equals("ball")) {
 				
 				if (paramMsg[1].equals("position")) {
@@ -111,6 +113,44 @@ public class ClientThread extends Thread {
 					Data.xBall = Float.parseFloat(position[0]);
 					Data.yBall = Float.parseFloat(position[1]);
 					
+				}
+				
+			} else if (paramMsg[0].equals("goal")) {
+				
+				System.out.println("Mensaje Cliente: " + msg);
+				
+				Data.ballIsGoal = true;
+				
+				if (paramMsg[1].equals("left")) {
+					Data.score2 += 1;
+					Data.ballGoalSide = -1;
+				} else {
+					Data.score1 += 1;
+					Data.ballGoalSide = 1;
+				}
+				
+			} else if (paramMsg[0].equals("kick")) {
+				
+				System.out.println("Mensaje Cliente: " + msg);
+				
+				if (paramMsg[1].equals("P1")) {
+					if (paramMsg[2].equals("gk")) 
+						Data.kickGk1 = true;
+					else if (paramMsg[2].equals("def"))
+						Data.kickDef1 = true;
+					else if (paramMsg[2].equals("mid"))
+						Data.kickMid1 = true;
+					else if (paramMsg[2].equals("fwd")) 
+						Data.kickFwd1 = true;
+				} else {
+					if (paramMsg[2].equals("gk")) 
+						Data.kickGk2 = true;
+					else if (paramMsg[2].equals("def"))
+						Data.kickDef2 = true;
+					else if (paramMsg[2].equals("mid"))
+						Data.kickMid2 = true;
+					else if (paramMsg[2].equals("fwd")) 
+						Data.kickFwd2 = true;
 				}
 				
 			}

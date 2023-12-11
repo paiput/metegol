@@ -1,13 +1,9 @@
 package com.eblp.metegol.entities;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.eblp.metegol.utils.MyRenderer;
-import com.eblp.metegol.network.Client;
-import com.eblp.metegol.network.ClientThread;
 import com.eblp.metegol.utils.Config;
+import com.eblp.metegol.utils.MyRenderer;
 
 import enums.StickType;
 import enums.TeamType;
@@ -25,7 +21,7 @@ public class PlayersStick {
 	private float x, y;
 	private float w, h;
 	
-	private final float vel = 5;
+//	private final float vel = 5;
 
 	public PlayersStick(TeamType teamType, StickType st, int playersCount, float x, float y, float w, float h, int keyUp, int keyDown) {
 		this.x = x;
@@ -53,9 +49,8 @@ public class PlayersStick {
 	public void update() {
 		
 		float bottom = Config.SCREEN_H/2 - h/2;
-		float top = Config.SCREEN_H/2 + h/2;
+//		float top = Config.SCREEN_H/2 + h/2;
 		
-		int pIndex = 0;
 		for (int i = 0; i < players.length; i++) {
 			Player p = players[i];
 			
@@ -63,8 +58,6 @@ public class PlayersStick {
 			
 			// Actualiza las posiciones de los jugadores con los datos del servidor
 			updatePlayersPositions(p, i);
-			
-			pIndex++;
 		}
 		
 		// Caso especial para el arquero
@@ -112,6 +105,12 @@ public class PlayersStick {
 	
 	public StickType getStickType() {
 		return type;
+	}
+	
+	public void kick() {
+		for (Player p : players) {
+			p.kick();
+		}
 	}
 	
 	public void draw() {

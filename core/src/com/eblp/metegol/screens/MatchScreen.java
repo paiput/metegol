@@ -68,17 +68,14 @@ public class MatchScreen implements Screen {
 		vGoal.setPosition(vw / 2 + pitch.getWidth() / 2 - vGoal.getWidth() - 4, vh / 2 - hGoal.getHeight() / 2);
 
 		ball = new Ball(Data.xBall, Data.yBall, 16, 16);
-		//ball = new Ball(Config.SCREEN_W / 2 - 8, Config.SCREEN_H / 2 - 8, 16, 16);
 
 		// Equipo local
 		hTeam = new Team("Velez", "escudo-velez-pixel.png", TeamType.HOME);
 		hTeam.setLineUp(pitch.getWidth(), pitch.getHeight());
-		hTeam.setThread(ct);
 
 		// Equipo visitante
 		vTeam = new Team("Independiente", "escudo-independiente-pixel.png", TeamType.VISITOR);
 		vTeam.setLineUp(pitch.getWidth(), pitch.getHeight());
-		vTeam.setThread(ct);
 
 		goalAlert = new MyText("Gooool", Config.FONT, 128, Color.YELLOW);
 		goalAlert.setPosition(vw / 2 - goalAlert.getWidth() / 2, vh / 2 + goalAlert.getHeight() / 2);
@@ -110,9 +107,10 @@ public class MatchScreen implements Screen {
 		}
 
 		// Termina el partido
-		if (hTeam.getScore() == 2 || vTeam.getScore() == 2) {
+		if (Data.score1 == 2 || Data.score2 == 2) {
+			Data.reset();
 			finalWhistle.play();
-			String winner = hTeam.getScore() == 2 ? hTeam.getName() : vTeam.getName();
+			String winner = Data.score1 == 2 ? hTeam.getName() : vTeam.getName();
 			game.setScreen(new GameOverScreen(game, "Ganooooo " + winner));
 			return;
 		}
@@ -146,11 +144,12 @@ public class MatchScreen implements Screen {
 		// Si es gol detecta en que arco y asigna puntaje correspondiente
 		if (Data.ballIsGoal) {
 			if (Data.ballGoalSide == -1)
-				vTeam.scoreGoal();
+				vTeam.updateScore();
 			else
-				hTeam.scoreGoal();
+				hTeam.updateScore();
 			showGoalAlert = true;
 			goalAlertOpacity = 0;
+			Data.ballIsGoal = false;
 		}
 
 		// Habilita movimiento de palos
