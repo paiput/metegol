@@ -16,7 +16,6 @@ public class Team {
 	private String name;
 	private TeamType teamType;
 	private MyText scoreText;
-//	private int score = 0;
 	
 	private MyImage image;
 	private Sound kickSound, goalSound;
@@ -42,21 +41,22 @@ public class Team {
 		goalSound = Gdx.audio.newSound(Gdx.files.internal("audio/crowd-shortened.wav"));
 	}
 	
+	
 	public void setLineUp(float pitchW, float pitchH) {
 		float y = Config.SCREEN_H/2 - pitchH/2;
 		float xi = Config.SCREEN_W/2 - pitchW/2; // toma como referencia inicial el borde izquierdo de la cancha
 				
 		if (teamType == TeamType.HOME) {
-			gkStick = new PlayersStick(TeamType.HOME, StickType.GK, 1, xi + pitchW*0.05f, y, 4, pitchH, Input.Keys.UP, Input.Keys.DOWN);
-			defStick = new PlayersStick(TeamType.HOME, StickType.DEF, 3, xi + pitchW*0.15f, y, 4, pitchH, Input.Keys.UP, Input.Keys.DOWN);
-			midStick = new PlayersStick(TeamType.HOME, StickType.MID, 4, xi + pitchW*0.4f, y, 4, pitchH, Input.Keys.UP, Input.Keys.DOWN);
-			fwdStick = new PlayersStick(TeamType.HOME, StickType.FWD, 3, xi + pitchW*0.7f, y, 4, pitchH, Input.Keys.UP, Input.Keys.DOWN);
+			gkStick = new PlayersStick(TeamType.HOME, StickType.GK, 1, xi + pitchW*0.05f, y, 4, pitchH);
+			defStick = new PlayersStick(TeamType.HOME, StickType.DEF, 3, xi + pitchW*0.15f, y, 4, pitchH);
+			midStick = new PlayersStick(TeamType.HOME, StickType.MID, 4, xi + pitchW*0.4f, y, 4, pitchH);
+			fwdStick = new PlayersStick(TeamType.HOME, StickType.FWD, 3, xi + pitchW*0.7f, y, 4, pitchH);
 		} else {			
 			// Invierte la posición de los jugadores
-			gkStick = new PlayersStick(TeamType.VISITOR, StickType.GK, 1, xi + pitchW*0.95f, y, 4, pitchH, Input.Keys.W, Input.Keys.S);
-			defStick = new PlayersStick(TeamType.VISITOR, StickType.DEF, 3, xi + pitchW*0.85f, y, 4, pitchH, Input.Keys.W, Input.Keys.S);
-			midStick = new PlayersStick(TeamType.VISITOR, StickType.MID, 4, xi + pitchW*0.6f, y, 4, pitchH, Input.Keys.W, Input.Keys.S);
-			fwdStick = new PlayersStick(TeamType.VISITOR, StickType.FWD, 3, xi + pitchW*0.3f, y, 4, pitchH, Input.Keys.W, Input.Keys.S);
+			gkStick = new PlayersStick(TeamType.VISITOR, StickType.GK, 1, xi + pitchW*0.95f, y, 4, pitchH);
+			defStick = new PlayersStick(TeamType.VISITOR, StickType.DEF, 3, xi + pitchW*0.85f, y, 4, pitchH);
+			midStick = new PlayersStick(TeamType.VISITOR, StickType.MID, 4, xi + pitchW*0.6f, y, 4, pitchH);
+			fwdStick = new PlayersStick(TeamType.VISITOR, StickType.FWD, 3, xi + pitchW*0.3f, y, 4, pitchH);
 		}
 	}
 	
@@ -68,6 +68,7 @@ public class Team {
 		animateKick();
 	}
 	
+	// Animación cuando patea una fila de jugadores
 	private void animateKick() {
 		if ((teamType == TeamType.HOME && Data.kickGk1) || (teamType == TeamType.VISITOR && Data.kickGk2)) {
 			gkStick.kick();
@@ -98,15 +99,6 @@ public class Team {
 	
 	public String getName() {
 		return name;
-	}
-	
-	public Player[] getAllPlayers() {
-		Player[] players = new Player[11];
-		System.arraycopy(gkStick.getPlayers(), 0, players, 0, 1);
-		System.arraycopy(defStick.getPlayers(), 0, players, 1, 3);
-		System.arraycopy(midStick.getPlayers(), 0, players, 4, 4);
-		System.arraycopy(fwdStick.getPlayers(), 0, players, 8, 3);
-		return players;
 	}
 	
 	public void drawLogo() {

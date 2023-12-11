@@ -2,10 +2,8 @@ package com.eblp.metegol.entities;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.eblp.metegol.utils.Config;
 import com.eblp.metegol.utils.MyRenderer;
 
-import enums.TeamType;
 import gameplay.Data;
 
 public class Ball {

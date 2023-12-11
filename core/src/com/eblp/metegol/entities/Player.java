@@ -13,7 +13,6 @@ public class Player {
 	private boolean isKicking;
 	private Texture texture;
 	private StickType type;
-	private float kickingX;
 	private Sprite sprite;
 	private int w, h;
 
@@ -26,7 +25,6 @@ public class Player {
 		sprite.setPosition(x, y);
 		sprite.setSize(w, h);
 		
-		kickingX = x + w/2 + 6;
 		isKicking = false;
 	}
 	

@@ -12,7 +12,6 @@ import gameplay.Data;
 public class PlayersStick {
 	private final int REGION_WIDTH = 16;
 	private final int REGION_HEIGHT = 64;
-	private int keyUp, keyDown;
 	private Player[] players;
 	private Texture texture;
 	private TeamType team;
@@ -23,13 +22,11 @@ public class PlayersStick {
 	
 //	private final float vel = 5;
 
-	public PlayersStick(TeamType teamType, StickType st, int playersCount, float x, float y, float w, float h, int keyUp, int keyDown) {
+	public PlayersStick(TeamType teamType, StickType st, int playersCount, float x, float y, float w, float h) {
 		this.x = x;
 		this.y = y;
 		this.w = w;
 		this.h = h;
-		this.keyUp = keyUp;
-		this.keyDown = keyDown;
 		this.type = st;
 		this.team = teamType;
 		texture = new Texture("stick-spritesheet.png");

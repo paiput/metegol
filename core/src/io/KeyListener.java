@@ -6,8 +6,6 @@ import com.eblp.metegol.network.ClientThread;
 
 public class KeyListener implements InputProcessor {
 	
-	private boolean up = false, down = false, up2 = false, down2 = false;
-
 	@Override
 	public boolean keyDown(int keycode) {
 		

@@ -16,10 +16,11 @@ public abstract class Data {
 	public static boolean kickFwd1 = false, kickFwd2 = false;
 	// Posicion de la pelota
 	public static float xBall, yBall;
-	// Pelota adentro del arco ?
+	// Pelota adentro del arco 
 	public static boolean ballIsGoal = false;
 	// Lado de la pelota si está adentro de un arco
 	public static int ballGoalSide;
+	// Marcadores 
 	public static int score1 = 0, score2 = 0;
 	
 	public static void reset() {

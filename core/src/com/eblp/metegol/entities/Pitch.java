@@ -1,8 +1,6 @@
 package com.eblp.metegol.entities;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.eblp.metegol.utils.MyImage;
-import com.eblp.metegol.utils.MyRenderer;
 
 public class Pitch {
 	

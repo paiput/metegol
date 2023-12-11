@@ -15,8 +15,9 @@ public class ClientThread extends Thread {
 
 	private static DatagramSocket connection;
 	private static InetAddress serverIP;
-	private static int port = 3030;
 	private boolean end = false;
+	
+	private static final int SERVER_PORT = 3030;
 
 	public ClientThread() {
 		try {
@@ -32,7 +33,7 @@ public class ClientThread extends Thread {
 	// Envia un mensaje al servidor
 	public static void sendMessage(String msg) {
 		byte[] data = msg.getBytes();
-		DatagramPacket dp = new DatagramPacket(data, data.length, serverIP, port);
+		DatagramPacket dp = new DatagramPacket(data, data.length, serverIP, SERVER_PORT);
 		try {
 			connection.send(dp);
 		} catch (IOException e) {
@@ -56,14 +57,18 @@ public class ClientThread extends Thread {
 
 	// Procesa el mensaje enviado por el servidor y guarda la IP
 	private void processMessage(DatagramPacket dp) {
+		// Tranforma el mensaje de DatagramPacket a string
 		String msg = new String(dp.getData()).trim();
 		
+		// Crear un array de Strings en caso de que el mensaje contenga _
 		String[] paramMsg = msg.split("_");
 		
 		if (paramMsg.length < 2) {
 			
+			// Si la conexión es correcta guarda la ip del servidor
 			if (msg.equals("OK")) {
 				serverIP = dp.getAddress();
+			// Arranca el partido cuando el servidor le avisa
 			} else if (msg.equals("Empieza")) {
 				Global.start = true;
 			} 

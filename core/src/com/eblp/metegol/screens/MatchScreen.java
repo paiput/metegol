@@ -38,8 +38,10 @@ public class MatchScreen implements Screen {
 	public MatchScreen(Metegol game) {
 		this.game = game;
 
+		// Viewport para mantener relación de aspecto
 		viewport = new FitViewport(Config.SCREEN_W, Config.SCREEN_H);
 
+		// Instancia al cliente
 		ct = new ClientThread();
 
 		System.out.println("Width: " + Config.SCREEN_W + " Height: " + Config.SCREEN_H);
@@ -53,6 +55,7 @@ public class MatchScreen implements Screen {
 		// Aplica el viewport
 		viewport.apply();
 
+		// Cancha
 		pitch = new MyImage("pitch-2.jpg");
 		pitch.setSize(Config.SCREEN_W * 0.75f, Config.SCREEN_H * 0.75f);
 		pitch.setPosition(vw / 2 - pitch.getWidth() / 2, Config.SCREEN_H / 2 - pitch.getHeight() / 2);
@@ -67,6 +70,7 @@ public class MatchScreen implements Screen {
 		vGoal.setSize(32, 160);
 		vGoal.setPosition(vw / 2 + pitch.getWidth() / 2 - vGoal.getWidth() - 4, vh / 2 - hGoal.getHeight() / 2);
 
+		// Pelota
 		ball = new Ball(Data.xBall, Data.yBall, 16, 16);
 
 		// Equipo local
@@ -77,21 +81,24 @@ public class MatchScreen implements Screen {
 		vTeam = new Team("Independiente", "escudo-independiente-pixel.png", TeamType.VISITOR);
 		vTeam.setLineUp(pitch.getWidth(), pitch.getHeight());
 
+		// Mensaje de gol
 		goalAlert = new MyText("Gooool", Config.FONT, 128, Color.YELLOW);
 		goalAlert.setPosition(vw / 2 - goalAlert.getWidth() / 2, vh / 2 + goalAlert.getHeight() / 2);
 
+		// Mensaje de espera
 		waiting = new MyText("Esperando oponente", Config.FONT, 64, Color.WHITE);
 		waiting.setPosition(vw / 2 - waiting.getWidth() / 2, vh / 2 - waiting.getHeight() / 2);
 
+		// Silbato final
 		finalWhistle = Gdx.audio.newSound(Gdx.files.internal("audio/final-whistle.wav"));
 
 		// Se inicia el hilo del cliente
 		ct.start();
-		
-		keysProcessor = new KeyListener();
-		Gdx.input.setInputProcessor(keysProcessor);
-		
 		System.out.println("Client thread iniciado");
+		
+		// Procesador de I/O
+		keysProcessor = new KeyListener();
+		Gdx.input.setInputProcessor(keysProcessor);		
 	}
 
 	@Override
@@ -99,6 +106,7 @@ public class MatchScreen implements Screen {
 		// Limpia la pantalla
 		MyRenderer.cleanScreen(0, 0, 0);
 
+		// Muestra mensaje de espera hasta que se habilite inicio de partido
 		if (!Global.start) {
 			MyRenderer.batch.begin();
 			waiting.draw();
@@ -106,10 +114,10 @@ public class MatchScreen implements Screen {
 			return;
 		}
 
-		// Termina el partido
-		if (Data.score1 == 2 || Data.score2 == 2) {
+		// Termina el partido y manda a pantalla GameOver
+		if (Data.score1 == Config.GOALS_TO_WIN || Data.score2 == Config.GOALS_TO_WIN) {
 			finalWhistle.play();
-			String winner = Data.score1 == 2 ? hTeam.getName() : vTeam.getName();
+			String winner = Data.score1 == Config.GOALS_TO_WIN ? hTeam.getName() : vTeam.getName();
 			Data.reset();
 			game.setScreen(new GameOverScreen(game, "Ganooooo " + winner));
 			return;
@@ -130,7 +138,7 @@ public class MatchScreen implements Screen {
 		hTeam.drawScore();
 		vTeam.drawScore();
 
-		// Gestiona rebote de pelota en los bordes y deteccion de gol
+		// Renderiza mensaje de gol
 		if (showGoalAlert && goalAlertOpacity < 1) {
 			goalAlertOpacity += 0.01f;
 			goalAlert.setOpacity(goalAlertOpacity);
@@ -139,6 +147,7 @@ public class MatchScreen implements Screen {
 			return;
 		}
 		
+		// Actualiza la posición de la pelota en todo momento
 		ball.update();
 
 		// Si es gol detecta en que arco y asigna puntaje correspondiente
