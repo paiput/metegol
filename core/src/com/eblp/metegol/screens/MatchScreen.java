@@ -108,9 +108,9 @@ public class MatchScreen implements Screen {
 
 		// Termina el partido
 		if (Data.score1 == 2 || Data.score2 == 2) {
-			Data.reset();
 			finalWhistle.play();
 			String winner = Data.score1 == 2 ? hTeam.getName() : vTeam.getName();
+			Data.reset();
 			game.setScreen(new GameOverScreen(game, "Ganooooo " + winner));
 			return;
 		}
